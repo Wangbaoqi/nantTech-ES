@@ -1,7 +1,7 @@
 
 
 // -0 and 0
-export function isNegativeZero(value: number): boolean {
+export function isNegativeZero(value: 0 | -0): boolean {
   return 1/value === -Infinity
 }
 

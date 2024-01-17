@@ -1,0 +1,27 @@
+# sameValueZero
+
+抽象操作`SameValueZero`接受参数 `x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+它决定了两个参数是否是相同的值（忽略`+0F`和`-0F`之间的差异）。调用时，它会执行以下步骤：
+
+```md
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+    a. Return Number::sameValueZero(x, y).
+3. Return SameValueNonNumber(x, y).
+```
+
+```ts
+export function sameValue(x: ESValueType, y: ESValueType): boolean {
+  if(typeof x !== typeof y) return false;
+
+  if(typeof x === 'number' && typeof y === 'number') {
+    return numberSameValue(x, y);
+  }
+
+  return sameValueNonNumber(x as Omit<ESValueType, 'number'>, y as Omit<ESValueType, 'number'>);
+}
+```
+
+`numberSameValue` 又名[sameValue](/operations/number/sameValue)
+
+`sameValueNonNumber` 是非数值类型的值进行比较，[移步](/operations/number/sameValue)

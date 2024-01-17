@@ -1,1 +1,21 @@
-# Primitive Common Utils
+# Common Utils
+
+以下是功能性方法集合
+
+## isNaN
+
+```ts
+// NaN only don't equal with self in ES.
+export function isNaN(value: number): boolean {
+  return value !== value
+}
+```
+
+## isNegativeZero
+
+```ts
+// negative zero
+export function isNegativeZero(value: 0 | -0): boolean {
+  return 1/value === -Infinity
+}
+```

@@ -1,4 +1,6 @@
 {
+  "index": "overview",
   "sameValue": "sameValue",
-  "sameValueZero": "sameValueZero"
+  "sameValueZero": "sameValueZero",
+  "equal": "equal"
 }

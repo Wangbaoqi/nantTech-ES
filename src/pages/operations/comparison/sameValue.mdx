@@ -1,1 +1,25 @@
 # SameValue
+
+抽象操作`SameValue`接受参数 `x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+它决定了这两个参数是否是相同的值。调用时，它会执行以下步骤：
+
+```md
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+    a. Return Number::sameValue(x, y).
+3. Return SameValueNonNumber(x, y).
+```
+
+```ts
+export function sameValue(x: ESValueType, y: ESValueType): boolean {
+  if(typeof x !== typeof y) return false;
+
+  if(typeof x === 'number' && typeof y === 'number') {
+    return numberSameValue(x, y);
+  }
+
+  return sameValueNonNumber(x as Omit<ESValueType, 'number'>, y as Omit<ESValueType, 'number'>);
+}
+```
+
+`numberSameValue` 又名[sameValue](/operations/number/sameValue)

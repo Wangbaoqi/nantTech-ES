@@ -1,3 +1,21 @@
+import { Callout } from 'nextra/components'
 
 # sameValueZero
 
+抽象操作 `sameValueZero` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。调用时，它会执行以下步骤：
+
+```md
+1. If x is NaN and y is NaN, return true.
+2. If x is +0𝔽 and y is -0𝔽, return true.
+3. If x is -0𝔽 and y is +0𝔽, return true.
+4. If x is y, return true.
+5. Return false.
+```
+
+```ts
+// 零值比较
+export function sameValueZero(x: number, y: number): boolean {
+  // (x !== x && y !== y) like isNaN(x) isNaN(y)
+  return x === y || (x !== x && y !== y)
+}
+```

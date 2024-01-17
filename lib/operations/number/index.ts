@@ -1,12 +1,13 @@
 // 6.1.6.1 Number Type
 
+import { ESZeroType } from '../../types/valueType';
 import { isNaN, isNegativeZero } from '../../utils'
 
 // 6.1.6.1.14 Number::sameValue(x, y)
 
 
 // number sameValue
-// 同值比较
+// 同值比较 Object.is 的应用
 export function sameValue(x: number, y: number): boolean {
 
   // x = NaN y = NaN
@@ -15,8 +16,8 @@ export function sameValue(x: number, y: number): boolean {
   // x = +0 && y = -0
   // x = -0 && y = +0
   if(
-    (!isNegativeZero(x) && isNegativeZero(y)) ||
-    (isNegativeZero(x) && !isNegativeZero(y))
+    (!isNegativeZero(x as ESZeroType) && isNegativeZero(y as ESZeroType)) ||
+    (isNegativeZero(x as ESZeroType) && !isNegativeZero(y as ESZeroType))
   ) return false;
 
   return x === y
@@ -28,3 +29,9 @@ export function sameValueZero(x: number, y: number): boolean {
   return x === y || (x !== x && y !== y)
 }
 
+
+export function equal(x: number, y: number): boolean {
+  // for NaN values
+  if(x !== x || y !== y) return false;
+  return x === y
+}
