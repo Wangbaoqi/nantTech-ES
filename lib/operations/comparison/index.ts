@@ -33,8 +33,8 @@ export function sameValueNonNumber(x: Omit<ESValueType, 'number'>, y: Omit<ESVal
   }
 
   // If x is a BigInt, then return BigInt::equal(x, y).
-  if (typeof x === 'bigint') {
-    return BigInt.equal(x, y); // Assuming BigInt has an equal method
+  if (typeof x === 'bigint' && typeof y === 'bigint') {
+    return bigIntEqual(x, y); // Assuming BigInt has an equal method
   }
 
   // NOTE: All other ECMAScript language values are compared by identity.
