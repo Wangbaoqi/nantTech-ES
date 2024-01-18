@@ -9,3 +9,4 @@ export function isNegativeZero(value: 0 | -0): boolean {
 export function isNaN(value: number): boolean {
   return value !== value
 }
+

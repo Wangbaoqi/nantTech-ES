@@ -2,5 +2,6 @@
   "index": "overview",
   "sameValue": "sameValue",
   "sameValueZero": "sameValueZero",
-  "equal": "equal"
+  "equal": "equal",
+  "add": "add"
 }
