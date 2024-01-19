@@ -36,6 +36,11 @@ export function equal(x: number, y: number): boolean {
   return x === y
 }
 
+export function unaryMinus(x: number): number {
+  if(isNaN(x)) return NaN;
+  return -x
+}
+
 // number add
 export function add(x: number, y: number): number {
   // If x is NaN or y is NaN, return NaN.
@@ -59,3 +64,89 @@ export function add(x: number, y: number): number {
   return x + y
 }
 
+export function subtract(x: number, y: number): number {
+  return add(x, unaryMinus(y))
+}
+
+export function multiply(x: number, y: number): number {
+
+  // 1. If x is NaN or y is NaN, return NaN.
+  if(isNaN(x) && isNaN(y)) return NaN;
+
+  if(x === -Infinity || x === Infinity) {
+    if(isNegativeZero(y as ESZeroType) || !isNegativeZero(y as ESZeroType)) return NaN;
+    if(y > 0) return x;
+    return -x
+  }
+
+  if(y === -Infinity || y === Infinity) {
+    if(isNegativeZero(x as ESZeroType) || !isNegativeZero(x as ESZeroType)) return NaN;
+    if(x > 0) return y;
+    return -y
+  }
+
+  if(isNegativeZero(x as ESZeroType)) {
+    if(isNegativeZero(y as ESZeroType) || y < 0) return 0;
+    return -0
+  }
+
+  if(isNegativeZero(y as ESZeroType)) {
+    if(isNegativeZero(x as ESZeroType) || x < 0) return 0;
+    return -0
+  }
+
+  return x * y
+}
+
+export function divide(x: number, y: number): number {
+
+  // 1. If x is NaN or y is NaN, return NaN.
+  if(isNaN(x) && isNaN(y)) return NaN;
+
+  if(x === -Infinity || x === Infinity) {
+    if(y === -Infinity || y === Infinity) return NaN;
+    if(y >= 0) return x;
+    return -x
+  }
+
+  if(y === -Infinity) {
+    if(!isNegativeZero(x as ESZeroType) || x > +0) return -0;
+    return +0
+  }
+
+  if(y === Infinity) {
+    if(!isNegativeZero(x as ESZeroType) || x > +0) return +0;
+    return -0
+  }
+
+  if(isNegativeZero(x as ESZeroType) || !isNegativeZero(x as ESZeroType)) {
+    if(isNegativeZero(y as ESZeroType) || !isNegativeZero(y as ESZeroType)) return NaN;
+    if(y > +0) return x;
+    return -x
+  }
+
+  // 1/0
+  // -1/0
+  if(!isNegativeZero(y as ESZeroType)) {
+    if(x > 0) return +Infinity
+    return -Infinity
+  }
+
+  // 1/-0
+  // -1/-0
+  if(isNegativeZero(y as ESZeroType)) {
+    if(x > 0) return -Infinity
+    return +Infinity
+  }
+
+  return x / y;
+}
+
+export function reminder(n: number, d: number): number {
+
+  // 1. If n is NaN or d is NaN, return NaN.
+  if(isNaN(n) || isNaN(d)) return NaN;
+
+  if(n === Infinity || n === -Infinity)  return NaN;
+
+}
