@@ -98,6 +98,7 @@ export function multiply(x: number, y: number): number {
   return x * y
 }
 
+// 2 / 4
 export function divide(x: number, y: number): number {
 
   // 1. If x is NaN or y is NaN, return NaN.
@@ -142,11 +143,37 @@ export function divide(x: number, y: number): number {
   return x / y;
 }
 
+// 2 % 4
 export function reminder(n: number, d: number): number {
 
   // 1. If n is NaN or d is NaN, return NaN.
   if(isNaN(n) || isNaN(d)) return NaN;
 
-  if(n === Infinity || n === -Infinity)  return NaN;
+  if(n === Infinity || n === -Infinity) return NaN;
 
+  if(d === Infinity || d === -Infinity) return n;
+
+  if(isNegativeZero(d as ESZeroType) || !isNegativeZero(d as ESZeroType)) return NaN;
+
+  if(isNegativeZero(n as ESZeroType) || !isNegativeZero(n as ESZeroType)) return n;
+
+  if(n === 0 || d === 0 || !isFinite(d) || !isFinite(n)) {
+    throw new Error('Assertion failed: n and d must be finite.')
+  }
+
+  let quotient = n / d;
+
+  // 数学函数截断（x）通过向零四舍五入去除x的分数部分，如果x < 0，则产生-floor（-x），否则产生floor（x）。
+  let q = quotient < 0 ? -Math.floor(-quotient) : Math.floor(quotient);
+
+  let r = n - (d * q);
+
+  if(r === 0 && n < -0) return -0;
+
+  return r;
 }
+
+export function bitwiseNot(x: number) {
+  // let oldValue =
+}
+
