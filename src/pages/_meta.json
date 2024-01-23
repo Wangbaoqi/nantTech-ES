@@ -1,4 +1,8 @@
 {
+  "dataType": {
+    "title": "DataType",
+    "type": "page"
+  },
 
   "fundamental": {
     "title": "Fundamental",

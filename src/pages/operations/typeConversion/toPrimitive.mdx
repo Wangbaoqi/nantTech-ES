@@ -1,1 +1,7 @@
 # ToPrimitive
+
+抽象操作 `ToPrimitive` 采用参数输入（ECMAScript语言值）和可选参数`ferredType（STRING或NUMBER）`，
+并返回包含ECMAScript语言值或抛出完成的正常完成。它将其输入参数转换为非对象类型。
+如果一个对象能够转换为多个原始类型，它可以使用可选的hint preferredType来支持该类型。
+调用时，它会执行以下步骤：
+
