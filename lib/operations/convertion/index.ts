@@ -1,4 +1,5 @@
 import { ESValueType } from '../../types/valueType';
+import { Call, GetMethod } from '../object/operations';
 
 
 export function stringToCodePoints(str: string): number[] {
@@ -19,10 +20,20 @@ export function stringToNumber(arg: string): number {
 }
 
 
-export function toPrimitive(input: ESValueType, preferredValue?: string | number) {
+export function toPrimitive(input: ESValueType, preferredValue?: 'STRING' | 'NUMBER') {
 
-  if(typeof input === 'object') {
+  if(typeof input === 'object' && input !== null) {
+    let exoticToPrim = GetMethod(input, '@@toPrimitive');
 
+    if(exoticToPrim !== undefined) {
+      let hint = 'default';
+      if(preferredValue === 'STRING') {
+        hint = 'string';
+      }else {
+        hint = 'number';
+      }
+      let result = Call(exoticToPrim, input, hint);
+    }
   }
 
 }
@@ -80,11 +91,28 @@ export function ToBoolean(arg: ESValueType) {
 
 export function ToObject(arg: ESValueType) {
 
-  if(typeof arg === undefined || arg === null) {
+  if(typeof arg === 'undefined' || arg === null) {
     throw new TypeError('Cannot convert undefined or null to object');
   }
 
   if(typeof arg === 'number') {
-
+    return new Number(arg)
   }
+
+  if(typeof arg === 'string') {
+    return new String(arg)
+  }
+
+  if(typeof arg === 'boolean') {
+    return new Boolean(arg)
+  }
+
+  if(typeof arg === 'bigint') {
+    return BigInt(arg)
+  }
+
+  if(typeof arg === 'symbol') {
+    return Symbol(arg)
+  }
+
 }
