@@ -112,7 +112,7 @@ export function ToObject(arg: ESValueType) {
   }
 
   if(typeof arg === 'symbol') {
-    return Symbol(arg)
+    // return Symbol(arg)
   }
 
 }
