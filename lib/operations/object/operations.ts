@@ -23,9 +23,9 @@ export function GetMethod(V: ESValueType, P: PropertyKey) {
 
   if(typeof func === undefined || func === null) return undefined;
 
-  if(!IsCallable(func)) {
-    throw new TypeError('func must be a function');
-  }
+  // if(!IsCallable(func)) {
+  //   throw new TypeError('func must be a function');
+  // }
 
 }
 
