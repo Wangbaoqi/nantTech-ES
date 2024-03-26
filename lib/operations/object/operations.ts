@@ -9,9 +9,8 @@ export function Get(V: object, P: PropertyKey) {
 
 
 export function GetV(V: ESValueType, P: PropertyKey) {
-  let O: ObjectSelf = ToObject(V);
+  let O = ToObject(V);
   // Return ? O.[[Get]](P, V).
-  return O[P];
 }
 
 

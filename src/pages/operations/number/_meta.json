@@ -3,5 +3,6 @@
   "sameValue": "sameValue",
   "sameValueZero": "sameValueZero",
   "equal": "equal",
-  "add": "add"
+  "add": "add/subtract",
+  "multiply": "multiply/divide/reminder"
 }

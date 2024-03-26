@@ -1,7 +1,9 @@
-# add
+# add/subtract
+
 import { Callout } from 'nextra/components'
 
 
+## add
 
 抽象操作 `add` 接受参数`x(Number)`和`y(Number)`，并返回一个数字。
 
@@ -56,4 +58,24 @@ export function add(x: number, y: number): number {
   // Otherwise, return x + y.
   return x + y
 }
+```
+
+## subtract
+
+抽象运算`suttract`接受参数`x`（一个Number）和`y`（一个Number）并返回一个`Number`。
+
+它执行减法，产生其操作数的差异；
+x是**minuend**，y是**subtrahend**。调用时，它会执行以下步骤：
+
+```md
+1. Return add(x, unaryMinus(y))
+```
+
+## unaryMinus
+
+抽象操作`unaryMinus`接受参数`x`（一个数字）并返回一个`Number`。调用时，它会执行以下步骤：
+
+```md
+1. if x is NaN, return NaN
+2. Return the result of negating x; that is, compute a Number with the same magnitude but opposite sign.
 ```

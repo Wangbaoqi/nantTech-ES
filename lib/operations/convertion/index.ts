@@ -89,6 +89,7 @@ export function ToBoolean(arg: ESValueType) {
   return true
 }
 
+
 export function ToObject(arg: ESValueType) {
 
   if(typeof arg === 'undefined' || arg === null) {
@@ -112,7 +113,8 @@ export function ToObject(arg: ESValueType) {
   }
 
   if(typeof arg === 'symbol') {
-    // return Symbol(arg)
+    return arg
   }
 
+  return arg
 }
