@@ -5,10 +5,17 @@ module.exports = {
     './src/components/**/*.{js,jsx,ts,tsx,md,mdx}',
 
     // Or if using `src` directory:
-    './src/**/*.{js,jsx,ts,tsx,md,mdx}'
+    './src/**/*.{js,jsx,ts,tsx,md,mdx}',
+    './theme.config.tsx'
   ],
+  darkMode: 'class',
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        wotfard: ['wotfard', 'Wotfard-fallback'],
+        maple: ['MapleMono']
+      },
+    }
   },
   plugins: []
 }

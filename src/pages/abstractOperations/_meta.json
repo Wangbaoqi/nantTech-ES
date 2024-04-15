@@ -1,0 +1,7 @@
+{
+  "index": "overview",
+  "typeConversion": "typeConversion",
+  "comparison": "comparison",
+  "operationOfObject": "operationOfObject",
+  "operationOfIterator": "operationOfIterator"
+}

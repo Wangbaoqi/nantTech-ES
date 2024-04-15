@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/fundamental',
+        destination: '/dataType/languageType/overview',
         permanent: true,
       },
     ]
