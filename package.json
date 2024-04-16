@@ -12,11 +12,15 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.1.0",
+    "mini-svg-data-uri": "^1.4.4",
     "next": "14.0.4",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^2.2.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",

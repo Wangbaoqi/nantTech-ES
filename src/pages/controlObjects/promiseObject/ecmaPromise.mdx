@@ -1,0 +1,19 @@
+import { Callout } from 'nextra/components'
+
+# Promise Object
+
+Promise是一个对象，用作延迟（可能还有异步）计算最终结果的占位符。
+
+任何Promise都处于三种相互排斥的状态之一：fullfilled、rejected和pending：
+
+- 如果p.then(f, r)将立即排队到任务中，立即调用`f`, 则promise对象p的状态是fulfilled
+- 如果p.then(f, r)将立即排队到任务中，立即调用`r`, 则promise对象p的状态是rejected
+- 如果p的状态既不是fulfilled也不是rejected，则其状态是pending
+
+
+
+
+
+
+
+

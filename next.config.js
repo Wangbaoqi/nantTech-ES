@@ -13,15 +13,7 @@ const withNextra = nextra({
 })
 
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/dataType/languageType/overview',
-        permanent: true,
-      },
-    ]
-  }
+
 }
 
 module.exports = withNextra(nextConfig)

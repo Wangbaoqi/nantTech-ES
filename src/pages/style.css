@@ -3,11 +3,17 @@
 @tailwind utilities;
 
 
+
+html {
+
+}
 body {
   @apply text-[15px]
 }
 
-code,
-table {
+code {
   @apply font-maple
 }
+
+
+
