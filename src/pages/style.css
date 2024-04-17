@@ -8,12 +8,18 @@ html {
 
 }
 body {
-  @apply text-[15px]
+  @apply text-[15px] relative
 }
 
 code {
   @apply font-maple
 }
 
+.nextra-nav-container-blur {
+  @apply !shadow-none !bg-transparent
+}
 
-
+.padding-h-24 {
+  padding-left: max(env(safe-area-inset-left), 1.5rem);
+  padding-right: max(env(safe-area-inset-right), 1.5rem);
+}
