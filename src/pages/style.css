@@ -16,7 +16,11 @@ code {
 }
 
 .nextra-nav-container-blur {
-  @apply !shadow-none !bg-transparent
+  @apply !shadow-none
+}
+
+.home-hero {
+  min-height: calc(100vh - 0rem);
 }
 
 .padding-h-24 {
