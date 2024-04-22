@@ -12,10 +12,23 @@ import { Note } from '@/components'
 ### Iterable Interface
 
 可迭代接口允许JS对象可以定义或者定制其迭代行为。例如在遍历的过程中，对象中的哪些值可以遍历到，同时JS也内置了一些
-**内置的可迭代对象**，并且有默认的行为，例如*Map*和*Array*，其他的内置类型则不是，比如*Object*。
+**内置的可迭代对象**，并且有默认的行为，例如*Map*、*Set*、*String*、*Array*、*argument*和*NodeList*，其他的内置类型则不是，比如*Object*。
 
 想要实现可迭代的行为，必须要为该对象实现`@@iterator`方法，也就意味着对象（或其原型上）必须有一个键为`@@iterator`
 的属性，通常使用`Symbol.iterator`来访问改属性。
+
+在实际编写代码中，内置的类型是不需要显示的区访问`Symbol.iterator`属性来访问其工厂函数，因为其会**自动兼容
+接收可迭代对象的任何语言特性**，包含的语言特性有以下几点：
+
+- `for of`
+- 数据解构
+- `...`拓展操作符
+- `Array.from`
+- `new Map`
+- `new Set`
+- `Promise.all`
+- `Promise.race`
+- `yield*`
 
 Iterable Interface 包含了以下的属性
 
@@ -67,6 +80,40 @@ const myIterator = {
 }
 ```
 
+### AsyncIterable Interface
+
+AsyncIterable Interface 包含了以下的属性
+
+| Property	           | Value	            | Requirement            |
+| :------------------- | :----------------- | :----------------------|
+| `@@asynciterator`    | 可以返回*AyncsIterator object*的函数 | 返回的对象必须符合`AyncsIterator` 接口 |
+
+### AsyncIterator Interface
+
+AsyncIterator Interface 包含了以下的属性
+
+| Property	           | Value	            | Requirement            |
+| :------------------- | :----------------- | :----------------------|
+| `next`               | 为IteratorResult对象返回promise的函数 | 无参数或者接受一个参数的函数，并返回 promise。promise 兑现为一个对象，该对象符合 *IteratorResult* 接口，并且这些属性与同步迭代器有着相同的语义。 |
+
+<Note>
+  参数可以传递给下一个函数，但它们的解释和有效性取决于目标**AsyncIterator**。
+  `for-await-of`语句和AsyncIterators的其他常见用户不会传递任何参数，因此期望以这种方式使用的**AsyncIterator**对象必须准备好处理没有参数的调用。
+</Note>
+
+**AysncIterator Interface optional Property**
+
+| Property	           | Value	            | Requirement            |
+| :------------------- | :----------------- | :----------------------|
+| `return`             | 可以返回*IteratorResult*的函数 | 无参数或者接受一个参数的函数，并返回 promise。promise 兑现为一个对象，该对象符合 IteratorResult 接口，并且这些属性与同步迭代器有着相同的语义。 |
+| `throw`              | 可以返回*IteratorResult*的函数 | 无参数或者接受一个参数的函数，并返回 promise。promise 兑现为一个对象，该对象符合 IteratorResult 接口，并且这些属性与同步迭代器有着相同的语义。 |
+
+<Note>
+通常，这些方法的调用者在调用它们之前应该检查它们是否存在。某些ECMAScript语言功能，包括`for-await-of`和`yield*`，在执行存在性检查后调用这些方法。
+</Note>
+
+
+
 ### IteratorResult Interface
 
 IteratorResult interface 包含了以下的属性
@@ -80,3 +127,27 @@ IteratorResult interface 包含了以下的属性
 
 **如果迭代器对象done属性返回的`true`，则下一次迭代也会返回`true`**，虽然这在语言层面是不强制的。
 
+
+## iteratorPrototype
+
+iteratorPrototypeObject有以下属性
+
+- 有一个`[[Prototype]]`内部插槽指向`Object.prototype`
+- 是一个 **ordinary Object**
+
+<Note>
+规范中定义的所有**实现Iterator接口的对象**也继承自`IteratorPrototype`。
+ECMAScript代码也可以定义从`IteratorPrototype`继承的对象。`IteratorPrototype`对象提供了一个可以添加适用于所有iterator对象的其他方法的地方。
+
+以下表达式是ECMAScript代码访问`IteratorPrototype`对象的一种方式：
+```ts
+Object.getPrototypeOf(Object.getPrototypeOf([][Symbol.iterator]()))
+```
+</Note>
+
+以下是迭代器原型上定义的方法
+
+| Property	                                | Description	             | Return                 |
+| :---------------------------------------- | :----------------------- | :----------------------|
+| `IteratorPrototype[@@iterator]()`        | The value of the "name" property of this function is "[Symbol.iterator]". | return **this** value
+| `AsyncIteratorPrototype[@@iterator]()`   | The value of the "name" property of this function is "[Symbol.asyncIterator]". | return **this** value
