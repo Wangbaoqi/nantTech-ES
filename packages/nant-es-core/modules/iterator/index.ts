@@ -39,6 +39,13 @@ class Counter {
     }
   }
 
+  throw(err: any) {
+    const exception = new Error(err)
+    return {
+      done: true
+    }
+  }
+
   [Symbol.iterator]() {
     return this
   }
