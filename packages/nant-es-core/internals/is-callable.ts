@@ -1,18 +1,3 @@
-# isCallable
-
-抽象操作*isCallable*接受参数*argument(es type value)*，并且返回一个**Boolean**。
-
-其判定如果 *argument* 是一个调用的函数（具有`[[Call]]`的内部插槽方法），执行以下步骤：
-
-```md
-1. if argument is not Object, return false
-2. if argument has a [[Call]] internal method, return true
-3. return false
-```
-
-具体实现
-
-```ts
 
 // https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
 
@@ -31,5 +16,3 @@ export function IsCallable(argument: ESValueType): boolean {
   return typeof argument === 'function';
 }
 
-
-```

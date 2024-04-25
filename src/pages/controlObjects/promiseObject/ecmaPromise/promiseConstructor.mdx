@@ -1,4 +1,4 @@
-import { Callout } from 'nextra/components'
+import { Note } from '@/components'
 
 # Promise constructor
 
@@ -36,7 +36,7 @@ a. Perform ? Call(resolvingFunctions.[[Reject]], undefined, « completion.[[Valu
 11. Return promise.
 ```
 
-<Callout>
+<Note>
   <strong>Note 1:</strong><br/>
   The executor argument must be a function object. It is called for initiating and reporting completion of
   the possibly deferred action represented by this Promise. The executor is called with two arguments:
@@ -44,27 +44,27 @@ a. Perform ? Call(resolvingFunctions.[[Reject]], undefined, « completion.[[Valu
   completion or failure of the deferred computation. Returning from the executor function does not mean
   that the deferred action has been completed but only that the request to eventually perform the deferred
   action has been accepted.
-</Callout>
+</Note>
 
-<Callout>
+<Note>
   <strong>Note 2:</strong><br/>
   The resolve function that is passed to an executor function accepts a single argument. The executor code may
   eventually call the resolve function to indicate that it wishes to resolve the associated Promise. The argument
   passed to the resolve function represents the eventual value of the deferred action and can be either the actual
   fulfillment value or another promise which will provide the value if it is fulfilled.
-</Callout>
+</Note>
 
-<Callout>
+<Note>
   <strong>Note 3:</strong><br/>
   The reject function that is passed to an executor function accepts a single argument. The executor code may
   eventually call the reject function to indicate that the associated Promise is rejected and will never be
   fulfilled. The argument passed to the reject function is used as the rejection value of the promise.
   Typically it will be an Error object.
-</Callout>
+</Note>
 
-<Callout>
+<Note>
   <strong>Note 4:</strong><br/>
   The resolve and reject functions passed to an executor function by the Promise constructor have the capability
   to actually resolve and reject the associated promise. Subclasses may have different constructor behaviour that
   passes in customized values for resolve and reject.
-</Callout>
+</Note>

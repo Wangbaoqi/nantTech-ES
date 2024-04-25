@@ -1,4 +1,4 @@
-import { Callout } from 'nextra/components'
+import { Note } from '@/components'
 
 # Promise Abstract Operation
 
@@ -144,9 +144,9 @@ e. Return undefined.
 8. If IsCallable(resolvingFunctions.[[Reject]]) is false, throw a TypeError exception.
 9. Return the PromiseCapability Record { [[Promise]]: promise, [[Resolve]]: resolvingFunctions.[[Resolve]], [[Reject]]: resolvingFunctions.[[Reject]] }.
 ```
-<Callout >
+<Note >
   This abstract operation supports Promise subclassing, as it is generic on any constructor that calls a passed executor function argument in the same way as the Promise constructor. It is used to generalize static methods of the Promise constructor to any subclass.
-</Callout>
+</Note>
 
 
 ## IsPromise ( x )
@@ -191,15 +191,15 @@ The host-defined abstract operation HostPromiseRejectionTracker takes arguments 
 
 The default implementation of HostPromiseRejectionTracker is to return UNUSED.
 
-<Callout >
+<Note >
   NOTE 1 <br/>
   HostPromiseRejectionTracker is called in two scenarios: <br/>
   When a promise is rejected without any handlers, it is called with its operation argument set to "reject".
   When a handler is added to a rejected promise for the first time, it is called with its operation argument set to "handle".
   A typical implementation of HostPromiseRejectionTracker might try to notify developers of unhandled rejections, while also being careful to notify them if such previous notifications are later invalidated by new handlers being attached.
-</Callout>
+</Note>
 
-<Callout >
+<Note >
   NOTE 2 <br/>
   If operation is "handle", an implementation should not hold a reference to promise in a way that would interfere with garbage collection. An implementation may hold a reference to promise if operation is "reject", since it is expected that rejections will be rare and not on hot code paths.
-</Callout>
+</Note>

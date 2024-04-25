@@ -1,4 +1,4 @@
-import { Callout } from 'nextra/components'
+import { Note } from '@/components'
 
 # Promise Job
 
@@ -60,7 +60,7 @@ d. Return ? thenCallResult.
 6. Return the Record { [[Job]]: job, [[Realm]]: thenRealm }.
 ```
 
-<Callout>
+<Note>
 NOTE<br/>
 This Job uses the supplied thenable and its then method to resolve the given promise. This process must take place as a Job to ensure that the evaluation of the then method occurs after evaluation of any surrounding code has completed.
-</Callout>
+</Note>

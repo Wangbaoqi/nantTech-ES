@@ -1,4 +1,4 @@
-import { Callout } from 'nextra/components'
+import { Note } from '@/components'
 
 # Properties of the Promise constructor
 
@@ -27,11 +27,11 @@ b. IfAbruptRejectPromise(result, promiseCapability).
 9. Return ? result.
 ```
 
-<Callout>
+<Note>
 NOTE<br/>
 This function requires its this value to be a constructor function that supports the parameter conventions
 of the Promise constructor.
-</Callout>
+</Note>
 
 ### GetPromiseResolve
 
@@ -122,9 +122,9 @@ a. If iteratorRecord.[[Done]] is false, set result to Completion(IteratorClose(i
 b. IfAbruptRejectPromise(result, promiseCapability).
 9. Return ? result.
 ```
-<Callout>
+<Note>
 This function requires its this value to be a constructor function that supports the parameter conventions of the Promise constructor.
-</Callout>
+</Note>
 
 ### PerformPromiseAllSettled ( iteratorRecord, constructor, resultCapability, promiseResolve )
 

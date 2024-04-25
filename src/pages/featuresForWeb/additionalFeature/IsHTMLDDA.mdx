@@ -1,0 +1,23 @@
+import { Note } from '@/components';
+
+# The [[IsHTMLDDA]] Internal Slot
+
+
+`[[IsHTMLDDA]]`内部插槽可能存在于**宿主环境**的对象上。
+
+当用作`typeof`运算符的操作数时, 具有`[[IsHTMLDDA]]`内部插槽的对象在*ToBoolean*和*IsLooselyEqual*抽象操作中的行为类似于`undefined`，
+
+如下例子
+
+```ts
+const documentAll = typeof document == 'object' && document.all;
+// 宽松对比
+typeof document == 'undefined' && document !== 'undefined' // true
+```
+
+<Note>
+  具有`[[IsHTMLDDA]]`内部插槽的对象不会由ECMA规范创建。
+  然而，Web浏览器中的[document.all](https://html.spec.whatwg.org/multipage/obsolete.html#dom-document-all)对象是一个**宿主环境的外来对象**，具有此插槽。
+  出于Web兼容性目的而存在。这种类型的对象没有其他已知示例，除document.all外，实现不应创建任何示例。
+</Note>
+
