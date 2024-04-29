@@ -11,7 +11,7 @@ export function get(it: string) {
 
 }
 
-export function set(it: string) {
+export function set(it: string, ) {
 
 }
 
