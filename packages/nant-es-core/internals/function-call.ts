@@ -9,3 +9,4 @@ const call = NATIVE_BIND ? callFn.bind(callFn) : function() {
 }
 
 export default call;
+
