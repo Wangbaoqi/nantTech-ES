@@ -35,8 +35,8 @@
     "title": "featuresForWeb",
     "type": "page"
   },
-  "utils": {
-    "title": "Utils",
+  "grammar": {
+    "title": "Grammar",
     "type": "page"
   },
   "404": {

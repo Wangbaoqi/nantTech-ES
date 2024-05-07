@@ -1,1 +1,27 @@
+import { Note } from '@/components/callout';
+
 # Function objects
+
+
+
+## Function ProtoType
+
+
+### Function.prototype.apply
+
+```ts
+Function.prototype.apply(thisArg, argArray)
+```
+
+apply方法执行以下步骤：
+
+<Note>
+1. Let *func* be the **this** value.
+2. If *IsCallable(func)* is **false**, throw a **TypeError** exception.
+3. If *argArray* is either *undefined* or *null*, then
+  a. Perform *PrepareForTailCall()*.
+  b. Return ? *Call(func, thisArg)*.
+4. Let *argList* be ? *CreateListFromArrayLike(argArray)*.
+5. Perform *PrepareForTailCall()*.
+6. Return ? *Call(func, thisArg, argList)*.
+</Note>
