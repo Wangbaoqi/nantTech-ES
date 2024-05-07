@@ -1,7 +1,11 @@
 
 import globalObject from "./global"
 
-export function applyN(this: any, ctx: any, thisArg: any) {
+// https://tc39.es/ecma262/#sec-function.prototype.apply
+
+export function apply(this: any, thisArg: any, arrArray: any) {
+
+  const func = this;
 
   ctx = ctx || globalObject;
 
