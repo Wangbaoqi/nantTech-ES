@@ -1,12 +1,33 @@
+import { IsCallable } from './is-callable';
+import globalObject from './global';
+import isNullOrUndefined from './is-null-or-undefined';
+import toObject from './to-object';
 
-import NATIVE_BIND from './function-bind-native';
-
-const callFn = Function.prototype.call;
-
-const call = NATIVE_BIND ? callFn.bind(callFn) : function() {
-  const arg = arguments;
-  return callFn.apply(callFn, [arg]);
+interface CtxType {
+  [key: string]: any
 }
 
-export default call;
+export default function call(this: Function, thisArg: any, ...args: any[]): any {
+
+  let ctx: CtxType;
+  const func = this;
+
+  if(!IsCallable(func)) throw new TypeError('func must be a function');
+
+  if(isNullOrUndefined(thisArg)) {
+    ctx = globalObject
+  }else {
+    ctx = toObject(thisArg)
+  }
+
+  ctx['func'] = func;
+
+  // Perform PrepareForTailCall
+  const result =  ctx.func(args);
+
+  // delete ctx['func'];
+  delete ctx['func'];
+
+  return result;
+}
 
