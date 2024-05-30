@@ -1,14 +1,3 @@
+const callNative = Function.prototype.call;
 
-import NATIVE_BIND from './function-bind-native';
-
-const FunctionPrototype = Function.prototype;
-const call = FunctionPrototype.call;
-
-const unCurryThisWithBind = NATIVE_BIND && FunctionPrototype.bind.bind(call, call);
-
-export default unCurryThisWithBind || function unCurryThis(fn: Function) {
-  const arg = arguments;
-  return function() {
-    return call.apply(fn, [arg]);
-  }
-}
+export default (callNative.bind as any as (this: Function, thisArg: any, ...args: any[]) => any).bind(callNative, callNative);

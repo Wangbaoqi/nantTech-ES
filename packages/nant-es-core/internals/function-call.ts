@@ -3,11 +3,13 @@ import globalObject from './global';
 import isNullOrUndefined from './is-null-or-undefined';
 import toObject from './to-object';
 
+import unCurryThis from './function-uncurry-this';
+
 interface CtxType {
   [key: string]: any
 }
 
-export default function call(this: Function, thisArg: any, ...args: any[]): any {
+export function call(this: Function, thisArg: any, ...args: any[]): any {
 
   let ctx: CtxType;
   const func = this;
@@ -31,3 +33,5 @@ export default function call(this: Function, thisArg: any, ...args: any[]): any 
   return result;
 }
 
+
+export default unCurryThis(unCurryThis.call)
