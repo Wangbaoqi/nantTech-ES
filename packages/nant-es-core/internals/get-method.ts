@@ -1,4 +1,4 @@
-import { LanguageType } from "@/types/languageType";
+import type { LanguageType } from "../types/languageType";
 import getValue from "./get-value";
 import isNullOrUndefined from "./is-null-or-undefined";
 import aCallable from "./a-callable";

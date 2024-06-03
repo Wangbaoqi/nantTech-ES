@@ -1,4 +1,4 @@
-import { LanguageType, PropertyKey } from "@/types/languageType";
+import type { LanguageType, PropertyKey } from "../../../types/languageType";
 
 
 // alias [[GET]]
