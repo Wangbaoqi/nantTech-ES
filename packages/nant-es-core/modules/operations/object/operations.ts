@@ -1,4 +1,4 @@
-import { ESValueType, ObjectSelf, PropertyKey } from "../../types/valueType";
+import { LanguageType, ObjectSelf, PropertyKey } from "@/types/languageType";
 import { ToObject } from '../convertion'
 
 export function Get(V: object, P: PropertyKey) {
@@ -8,13 +8,13 @@ export function Get(V: object, P: PropertyKey) {
 }
 
 
-export function GetV(V: ESValueType, P: PropertyKey) {
+export function GetV(V: LanguageType, P: PropertyKey) {
   let O = ToObject(V);
   // Return ? O.[[Get]](P, V).
 }
 
 
-export function GetMethod(V: ESValueType, P: PropertyKey) {
+export function GetMethod(V: LanguageType, P: PropertyKey) {
 
   // 1. If V has a [[Get]] internal method, then
   // 1. a. Return V.[[Get]](P).
@@ -29,14 +29,14 @@ export function GetMethod(V: ESValueType, P: PropertyKey) {
 
 }
 
-export function IsCallable(argument: ESValueType): boolean {
+export function IsCallable(argument: LanguageType): boolean {
   // 1. If argument is not an Object, return false.
   if(typeof argument !== 'object' || argument === null) return false;
   // 2. If argument has a [[Call]] internal method, return true.
   return true;
 }
 
-export function Call(F: ESValueType, V: ESValueType, ...args: ESValueType[]) {
+export function Call(F: LanguageType, V: LanguageType, ...args: LanguageType[]) {
   // 1. Let obj be ? ToObject(V).
   // 2. Return ? F.[[Call]](obj, F, args).
 

@@ -1,8 +1,8 @@
-import { ESValueType, PropertyKey } from "../../types/valueType";
+import { LanguageType, PropertyKey } from "@/types/languageType";
 
 
 // alias [[GET]]
-export function OrdinaryGet(O: object, P: PropertyKey, Receiver: ESValueType) {
+export function OrdinaryGet(O: object, P: PropertyKey, Receiver: LanguageType) {
 
 }
 
