@@ -16,7 +16,6 @@
     "framer-motion": "^11.1.0",
     "lucide-react": "^0.371.0",
     "mini-svg-data-uri": "^1.4.4",
-    "nant-es": "^1.0.0",
     "next": "14.0.4",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
