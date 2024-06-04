@@ -1,0 +1,8 @@
+{
+  "targetDefaults": {
+    "test": {
+      "cache": true,
+      "dependsOn": []
+    }
+  }
+}
