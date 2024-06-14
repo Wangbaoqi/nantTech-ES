@@ -1,0 +1,183 @@
+---
+title: Comparison Operation
+excerpt: Comparison Operation overview
+date: 2023-01-23
+type: Docs
+category: AbstractOperations
+tags: comparisonOperation
+---
+
+## isArray
+
+## isCallable
+
+抽象操作*isCallable*接受参数*argument(es type value)*，并且返回一个**Boolean**。
+
+其判定如果 *argument* 是一个调用的函数（具有`[[Call]]`的内部插槽方法），执行以下步骤：
+
+<Blockquote>
+1. if argument is not Object, return false
+2. if argument has a [[Call]] internal method, return true
+3. return false
+</Blockquote>
+
+具体实现
+
+```ts
+
+// https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
+
+import { ESValueType } from "../modules/types/valueType";
+
+// host environment eg. nodejs or browser
+const documentAll = typeof document === 'object' && document.all;
+
+// IsHTMLDDA-internal-slot and IsLooselyEqual and ToBoolean
+const IsHTMLDDA = typeof documentAll == 'undefined' && documentAll === 'undefined';
+
+export function IsCallable(argument: ESValueType): boolean {
+
+  if(IsHTMLDDA) return typeof argument === 'function' || argument === documentAll;
+
+  return typeof argument === 'function';
+}
+
+```
+
+## isConstructor
+
+## isExtensible
+
+## isLessThan
+
+## isStrictlyEqual
+
+抽象操作`isStrictlyEqual`接受参数 `x` - [ECMAScript语言值]()和`y` - [ECMAScript语言值]并返回布尔值。
+它为===运算符提供了语义。调用时，它会执行以下步骤：
+
+<Blockquote>
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+  a. Return Number::equal(x, y).
+3. Return SameValueNonNumber(x, y).
+</Blockquote>
+
+具体实现Polyfill：
+
+```ts
+export function isStrictlyEqual(x: ESValueType, y: ESValueType): boolean {
+  if(typeof x !== typeof y) return false;
+
+  if(typeof x === 'number' && typeof y === 'number') {
+    return numberEqual(x, y);
+  }
+
+  return sameValueNonNumber(x as Omit<ESValueType, 'number'>, y as Omit<ESValueType, 'number'>);
+}
+```
+
+## isLooselyEqual
+
+## SameValue
+
+抽象操作`SameValue`接受参数 `x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+它决定了这两个参数是否是相同的值。调用时，它会执行以下步骤：
+
+<Blockquote>
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+    a. Return Number::sameValue(x, y).
+3. Return SameValueNonNumber(x, y).
+</Blockquote>
+
+具体实现Polyfill：
+
+```ts
+export function sameValue(x: ESValueType, y: ESValueType): boolean {
+  if(typeof x !== typeof y) return false;
+
+  if(typeof x === 'number' && typeof y === 'number') {
+    return numberSameValue(x, y);
+  }
+
+  return sameValueNonNumber(x as Omit<ESValueType, 'number'>, y as Omit<ESValueType, 'number'>);
+}
+```
+
+`numberSameValue` 又名[sameValue](/operations/number/sameValue)
+
+## sameValueNonNumber
+
+抽象操作`sameValueNonNumber`接受参数 `x(除Number类型)` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`y(除Number类型)` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+调用时，它会执行以下步骤：
+
+<Blockquote>
+1. Assert: Type(x) is Type(y).
+2. If x is either null or undefined, return true.
+3. If x is a BigInt, then
+  a. Return BigInt::equal(x, y).
+4. If x is a String, then
+  a. If x and y have the same length and the same code units in the same positions, return true; otherwise, return false.
+5. If x is a Boolean, then
+  a. If x and y are both true or both false, return true; otherwise, return false.
+6. NOTE: All other ECMAScript language values are compared by identity.
+7. If x is y, return true; otherwise, return false.
+</Blockquote>
+
+具体实现Polyfill：
+
+```ts
+export function sameValueNonNumber(x: Omit<ESValueType, 'number'>, y: Omit<ESValueType, 'number'>) {
+
+  // Assert: Type(x) is Type(y).
+  if (typeof x !== typeof y) {
+    throw new Error("Type of x must be the same as the type of y");
+  }
+
+  // If x is either null or undefined, return true.
+  if (x === null || x === undefined) {
+    return true;
+  }
+
+  // If x is a BigInt, then return BigInt::equal(x, y).
+  if (typeof x === 'bigint') {
+    return BigInt.equal(x, y); // Assuming BigInt has an equal method
+  }
+
+  // NOTE: All other ECMAScript language values are compared by identity.
+  // If x is y, return true; otherwise, return false.
+  return x === y
+}
+```
+
+## sameValueZero
+
+抽象操作`SameValueZero`接受参数 `x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+它决定了两个参数是否是相同的值（忽略`+0F`和`-0F`之间的差异）。调用时，它会执行以下步骤：
+
+<Blockquote>
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+    a. Return Number::sameValueZero(x, y).
+3. Return SameValueNonNumber(x, y).
+</Blockquote>
+
+```ts
+export function sameValue(x: ESValueType, y: ESValueType): boolean {
+  if(typeof x !== typeof y) return false;
+
+  if(typeof x === 'number' && typeof y === 'number') {
+    return numberSameValue(x, y);
+  }
+
+  return sameValueNonNumber(x as Omit<ESValueType, 'number'>, y as Omit<ESValueType, 'number'>);
+}
+```
+
+`numberSameValue` 又名[sameValue](/operations/number/sameValue)
+
+`sameValueNonNumber` 是非数值类型的值进行比较，[移步](/operations/number/sameValue)
+
+## isPropertyKey
+
+## isRegExp

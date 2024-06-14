@@ -1,0 +1,35 @@
+---
+title: Properties of the Promise Prototype Object
+excerpt: Promise
+date: 2023-01-23
+type: Docs
+category: ControlObjects
+tags: controlObjects
+---
+
+
+## Promise.prototype.catch
+
+## Promise.prototype.constructor
+
+## Promise.prototype.finally
+
+## Promise.prototype.then
+
+## Promise.prototype[@@toStringTag]
+
+
+
+## Properties of the Promise Instance
+
+Promise Instances 是从Promise原型对象（固有的，%Promise.prototype%）继承属性的普通对象。
+
+使用下表中描述的内部槽创建Promise实例。
+
+| Internal Slot	         | Type	                       | Desc               |
+| :--------------------- | :-------------------------- | :----------------- |
+| `[[PromiseState]]`     |PENDING,FULFILLED,REJECTED   | 控制promise如何响应对其then方法的传入调用。|
+| `[[PromiseResult]]`    | ES language value           | promise被resolve或者被reject的值。仅当【【PromiseState】】未待定时才有意义。|
+| `[[PromiseFulfillReactions]]` | List of PromiseReaction Records | 当/如果承诺从PENDIND状态转换到FULFILLED状态时要处理的记录。|
+| `[[PromiseRejectReactions]]`| List of PromiseReaction Records | 当/如果承诺从PENDIND状态转换到REJECTED状态时要处理的记录。|
+| `[[PromiseIsHandled]]` | a Boolean | 指示承诺是否曾经有过履行或拒绝处理程序；用于未处理的拒绝跟踪。

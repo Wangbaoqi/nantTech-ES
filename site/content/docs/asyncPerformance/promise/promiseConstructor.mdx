@@ -1,0 +1,78 @@
+---
+title: Promise Constructor
+excerpt: Promise constructor overview
+date: 2023-01-23
+type: Docs
+category: AbstractOperations
+tags: comparisonOperation
+---
+
+# Promise constructor
+
+The Promise constructor:
+
+<Blockquote>
+
+1. is %Promise%.
+2. is the initial value of the "Promise" property of the global object.
+3. creates and initializes a new Promise when called as a constructor.
+4. is not intended to be called as a function and will throw an exception when called in that manner.
+5. may be used as the value in an extends clause of a class definition.
+   Subclass constructors that intend to inherit the specified Promise behaviour must include a super
+   call to the Promise constructor to create and initialize the subclass instance with the internal
+   state necessary to support the Promise and Promise.prototype built-in methods.
+</Blockquote>
+
+
+## Promise
+
+This function performs the following steps when called:
+
+<Blockquote>
+1. If NewTarget is undefined, throw a TypeError exception.
+2. If IsCallable(executor) is false, throw a TypeError exception.
+3. Let promise be ? OrdinaryCreateFromConstructor(NewTarget, "%Promise.prototype%", « [[PromiseState]], [[PromiseResult]], [[PromiseFulfillReactions]], [[PromiseRejectReactions]], [[PromiseIsHandled]] »).
+4. Set promise.[[PromiseState]] to PENDING.
+5. Set promise.[[PromiseFulfillReactions]] to a new empty List.
+6. Set promise.[[PromiseRejectReactions]] to a new empty List.
+7. Set promise.[[PromiseIsHandled]] to false.
+8. Let resolvingFunctions be CreateResolvingFunctions(promise).
+9. Let completion be Completion(Call(executor, undefined, « resolvingFunctions.[[Resolve]], resolvingFunctions.[[Reject]] »)).
+10. If completion is an abrupt completion, then
+a. Perform ? Call(resolvingFunctions.[[Reject]], undefined, « completion.[[Value]] »).
+11. Return promise.
+</Blockquote>
+
+
+<Note>
+  <strong>Note 1:</strong><br/>
+  The executor argument must be a function object. It is called for initiating and reporting completion of
+  the possibly deferred action represented by this Promise. The executor is called with two arguments:
+  resolve and reject. These are functions that may be used by the executor function to report eventual
+  completion or failure of the deferred computation. Returning from the executor function does not mean
+  that the deferred action has been completed but only that the request to eventually perform the deferred
+  action has been accepted.
+</Note>
+
+<Note>
+  <strong>Note 2:</strong><br/>
+  The resolve function that is passed to an executor function accepts a single argument. The executor code may
+  eventually call the resolve function to indicate that it wishes to resolve the associated Promise. The argument
+  passed to the resolve function represents the eventual value of the deferred action and can be either the actual
+  fulfillment value or another promise which will provide the value if it is fulfilled.
+</Note>
+
+<Note>
+  <strong>Note 3:</strong><br/>
+  The reject function that is passed to an executor function accepts a single argument. The executor code may
+  eventually call the reject function to indicate that the associated Promise is rejected and will never be
+  fulfilled. The argument passed to the reject function is used as the rejection value of the promise.
+  Typically it will be an Error object.
+</Note>
+
+<Note>
+  <strong>Note 4:</strong><br/>
+  The resolve and reject functions passed to an executor function by the Promise constructor have the capability
+  to actually resolve and reject the associated promise. Subclasses may have different constructor behaviour that
+  passes in customized values for resolve and reject.
+</Note>

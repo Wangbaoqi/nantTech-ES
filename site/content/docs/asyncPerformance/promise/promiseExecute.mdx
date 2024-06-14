@@ -1,0 +1,168 @@
+---
+title: Promise Execute
+excerpt: Promise Execute
+date: 2023-01-23
+type: Docs
+subType: blog
+category: ControlObjects
+tags: ControlObjects
+---
+
+
+Promise是一个对象，用作延迟（可能还有异步）计算最终结果的占位符。
+
+<Note>
+promise是一个值（且该值在当前状态下并不知道）的代理，当Promise创建的时候。
+其允许你关联成功或者失败的操作事件。让异步的操作看起来像是同步的操作（异步方法是不会立即返回最终的值，
+而是返回一个*Promise*, 在未来的某个时刻使用）
+</Note>
+
+任何Promise都处于三种相互排斥的状态之一：fullfilled、rejected和pending：
+
+- 如果p.then(f, r)将立即排队到任务中，立即调用`f`, 则promise对象p的状态是fulfilled
+- 如果p.then(f, r)将立即排队到任务中，立即调用`r`, 则promise对象p的状态是rejected
+- 如果p的状态既不是fulfilled也不是rejected，则其状态是pending
+
+
+## Promise Internal value of invoke constructor
+
+当Promise的构造函数被调用时，有以下两件事触发：
+
+1. A Promise Object is created
+
+此Promise对象内部有以下插槽：
+
+- `[[PromiseState]]`
+- `[[PromiseResult]]`
+- `[[PromiseIsHandled]]`
+- `[[PromiseFullfillReactions]]`
+- `[[PromiseRejectReactions]]`
+
+2. A [Promise capability record](/controlObjects/promiseObject/ecmaPromise/abstractOperations#promisecapability-records) is created
+
+它封装了Promise，并且添加了一些额外的函数来`resolve`或者`reject`Promise，这些函数控制了Promise最终的
+`[[PromiseState]]`和`[[PromiseResult]]`，并且启动了异步任务。
+
+<video id='2' className='my-8' autoPlay={true} loop src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--ZoPmH-68--/v1711049637/Screen_Recording_2024-03-21_at_2.33.24_PM_lhhkvx.mp4'/>
+
+通过调用`resolve`来*resolve Promise*，可以通过调用`executor`函数来获取。
+
+当调用`resolve`函数时：
+
+- `[[PromiseState]]` 由`pending`设置为`fulfilled`
+- `[[PromiseResult]]` 设置为`done`
+- `[[PromiseIsHandled]]` 设置为 `false`
+
+<video id='1' className='my-8' autoPlay={true} loop src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--WdCyRJ2a--/v1711050101/Screen_Recording_2024-03-21_at_2.39.32_PM_o1mmpa.mp4' ></video>
+
+
+## Promise Internal value of invoke then
+
+当调用`then`函数时，`[[PromiseFulfillReactions]]`和`[[PromiseRejectReactions]]`在其中发挥着作用。
+
+`[[PromiseFulfillReactions]]` field包含[Promise Reaction](/controlObjects/promiseObject/ecmaPromise/abstractOperations#promisereaction-records)，这是一个通过将`then`处理程序链接到promise而创建的对象。
+
+**Promise Reaction**的属性`[[Handler]]`指向了`then`中的回调函数，当Promise被*resolve*，此回调函数被加入了
+`Microtask Queue`，并且可以访问和解析Promise的值。
+
+<video id='3' className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--N5KNNf4P--/v1711050079/Screen_Recording_2024-03-21_at_2.40.43_PM_iwt5vk.mp4' ></video>
+
+当Promise resolves时，这个处理回调函数接收`[[PromiseResult]]`的值作为其参数，之后它被推送到**微任务队列**。
+
+<video id='4' className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--6RZwmECA--/v1711289481/Screen_Recording_2024-03-24_at_9.09.44_AM_zkfp0x.mp4' ></video>
+
+<Note>
+  微任务队列是一个特殊的队列在事件循环中，当调用栈是空的，事件循环程序中首先会处理为任务队列中的任务，直到微任务队列为空，
+  然后再处理**任务队列（宏任务队列或者回调队列）**
+  <video id='5' className='my-8 w-3/4' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--5m-F-2oM--/v1711289949/Screen_Recording_2024-03-24_at_9.18.14_AM_ruprvi.mp4' ></video>
+</Note>
+
+**同样的，也可以创建*Promise Reaction record* 来处理Promise rejection**，通过`catch`，此`catch`的参数回调函数也会被
+加入微任务队列。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--N5KNNf4P--/v1711050079/Screen_Recording_2024-03-21_at_2.40.43_PM_iwt5vk.mp4' ></video>
+
+到目前为止，我们只在`executor`函数中直接调用了`resolve`或`reject`。虽然这是可能的，但它并没有充分利用Promise的力量（和主要目的）！
+
+在大多数情况下，我们会想要在某个稍后的时间点`resolve`或`reject`，通常是在异步任务完成时。
+
+这里我们使用`setTimeout`来模拟异步任务。
+
+```ts
+new Promise((resolve,reject) => {
+  setTimeout(() => {
+    resolve('done')
+  }, 1000);
+})
+.then(result => console.log(result))
+```
+
+**首先，`new Promise`构造函数加入到了调用栈，并且创建了Promise 实例**
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--VF_Od111--/v1711214758/Screen_Recording_2024-03-23_at_12.21.27_PM_nt6qzk.mp4' ></video>
+
+
+**然后，`executor`函数执行了，调用了`setTimeout`, 其被加入到了调用栈。**
+
+`setTimeout`负责调度**Timers Web API**中的计时器，延迟为1000ms，之后我们传递给`setTimeout`的回调将被推送到任务队列。
+
+在计时器和**Promise构造函数**从**调用堆栈**中弹出后，引擎会遇到`then`。
+
+`then`被加入到了调用栈，并且创建了一个*Promise Reaction record*，其属性`[[handler]]`指向了`then`的回调函数。
+
+由于`[[PromiseState]]`仍是`"pending"`，*Promise Reaction record*被加入到了`[[PromiseFulfillReactions]]`列表中。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--eFQtSN3o--/v1711215213/Screen_Recording_2024-03-23_at_12.32.19_PM_vj7fv5.mp4' ></video>
+
+当1000ms到达时，`setTimeout`回调函数被加入到任务队列中。
+
+此时调用栈中如果有其他任务，则执行其他任务，直到此`setTimeout`的回调，此时回调会从任务队列中进入到调用栈，立即执行回调。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--BOz3Wscv--/eo_5/v1711216474/Screen_Recording_2024-03-23_at_12.53.51_PM_igdqbf.mp4' ></video>
+
+此时，会执行`resolve`，`[[PromiseState]]`设置为`"fulfilled"`，`[[PromiseResult]]`设置为`"done"`，此时
+跟*Promise Reaction record*相关联的代码被加入到了微任务队列，然后调用栈弹出了回调函数和`resolve`。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--kjL0rehF--/so_5/v1711216474/Screen_Recording_2024-03-23_at_12.53.51_PM_igdqbf.mp4' ></video>
+
+由于调用堆栈是空的，事件循环首先检查`then`处理程序的回调正在等待的微任务队列。
+
+然后`then`回调函数进入调用栈，打印`result`的值，也就是**Promise**内部插槽属性`[[PromiseResult]]`的值`"done"`。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--QBCCABTA--/v1711221523/Screen_Recording_2024-03-23_at_2.17.52_PM_vxfdld.mp4' ></video>
+
+一旦回调完成执行并从调用堆栈中弹出，程序就完成了！
+
+
+## Promise Internal value of multi then
+
+除了创建*Promise reaction record*之外，`then`也会返回一个Promise，也就意外着可以将多个`then`进行链式调用。
+
+```ts
+new Promise((resolve,reject) => {
+  resolve(1)
+})
+.then(result => result * 2)
+.then(result => result * 2)
+.then(result => console.log(result))
+```
+
+当此代码执行时，调用Promise构造函数时会创建一个Promise对象。之后，每当引擎遇到`then`时，
+都会创建*Promise Reaction record*和Promise对象。
+
+在这两种情况下，then回调都将接收到的`[[PromiseResult]]`值乘以2。then的`[[PromiseResult]]`被设置为该计算的结果，
+该结果又被下一个then的处理程序使用。
+
+<video className='my-8' autoPlay={true} loop={true} src='https://res.cloudinary.com/dq8xfyhu4/video/upload/s--9_00B0tc--/v1711223895/Screen_Recording_2024-03-23_at_2.57.09_PM_ithhuf.mp4' ></video>
+
+最终，结果被打印出来了。最后一个then promise的`[[PromiseResult]]`是`undefined`，因为我们没有显式返回值，这意味着它隐式返回了未定义的值。
+
+
+## Conclusion
+
+**Promise是一个具有一些额外的功能来改变其内部状态的对象**。
+
+而这些额外的功能也就是最酷的事情，如果其被`then`或者`catch`附加的话，是可以触发异步的操作。
+由于这些处理程序被添加到**微任务队列**中，因此你可以以非阻塞的方式处理这些最终的结果。处理错误也是
+容易的。将多个处理程序链接到一起，可以使你的代码具有可读性可可维护性！
+

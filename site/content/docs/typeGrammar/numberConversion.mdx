@@ -1,0 +1,417 @@
+---
+title: Number Conversion
+excerpt: Number Conversion overview
+date: 2023-01-23
+type: Docs
+category: TypeConversion
+tags: typeConversion
+---
+
+ECMAScript有两种内置的数字类型：`Number`和`BigInt`。以下抽象操作是在这些数字类型上定义的。
+**result** 列显示返回类型，并指示是否可能对操作的某些调用返回突然完成。
+
+| Operation     | Example source	 |   Explain  | Result |
+| :------------ | :--------------: | :----------- | ----------: |
+| [sameValue]  | `Object.is(x,y)` | 对象内部方法,通过SameValue(x,y)，以测试确切的值相等性 | Boolean
+| [sameValueZero] | `[x].includes(y)`| Array、Map和Set方法，通过SameValueZero(x,y)测试值相等，忽略`+0`和`-0`之间的差异 | Boolean
+| [equal] | `x==y`| 相等运算符，通过[isStrictlyEqual]调用 | Boolean
+| [add] | `x+y`| 相加运算符，通过前缀自增、后缀自增以及相加调用 | Number
+
+
+
+## Number Type
+
+Number类型是一种[基于IEEE754标准的双精度64位二进制格式的值]()。
+能够存储2<sup>-1074</sup> 到 2<sup>1024</sup>之间的正浮点数, 以及 -2<sup>-1074</sup> 和 -2<sup>-1024</sup> 之间的负浮点数。
+但是它仅能安全地存储在 - (2<sup>53</sup> - 1) `Number.MIN_SAFE_INTEGER` 到 2<sup>53</sup> - 1 `Number.MAX_SAFE_INTEGER` 范围内的整数。
+超出这个范围，JavaScript 将不能安全地表示整数；
+相反，它们将由双精度浮点近似表示。你可以使用 `Number.isSafeInteger()` 检查一个数是否在安全的整数范围内。
+
+±(2<sup>-1074</sup> ~ 2<sup>1024</sup>) 范围之外的值会自动转换：
+
+- 大于 `Number.MAX_VALUE` 的正值被转换为 `+Infinity`。
+- 小于 `Number.MIN_VALUE` 的正值被转换为 `+0`。
+- 小于 `-Number.MAX_VALUE` 的负值被转换为 `-Infinity`。
+- 大于 `-Number.MIN_VALUE` 的负值被转换为 `-0`。
+
+`+Infinity` 和 `-Infinity` 行为类似于数学上的无穷大，但是有一些细微的区别；更多细节，参见 `Number.POSITIVE_INFINITY` 和 `Number.NEGATIVE_INFINITY`。
+
+Number 类型仅有一个具有多个表现形式的值：`0` 同时表示为 `-0` 和 `+0`（其中 `0` 是 `+0` 的别名）。
+实际上，这两者之间几乎没有区别；例如，`+0 === -0` 是 `true`。然而，当你除以 `0` 的时候，你要注意到这一点：
+
+```ts
+console.log(1/0); // Infinity
+console.log(1/-0); // -Infinity
+```
+
+`NaN（“Not a Number”）`是一个特殊种类的数值，当算术运算的结果不表示数值时，通常会遇到它。**它也是 JavaScript 中唯一不等于自身的值。**
+
+**虽然 `number` 在概念上是一个“数学的值”，并且总是隐式的编码为浮点类型，但是 JavaScript 提供了位运算符。当应用位运算符时，number 首先转换为 32 位整数。**
+
+
+### add
+
+抽象操作 `add` 接受参数`x(Number)`和`y(Number)`，并返回一个数字。
+
+它根据[IEEE 754-2019](https://tc39.es/ecma262/#sec-bibliography)二进制双精度算术的规则进行加法，产生其参数的总和。调用时，它会执行以下步骤：
+
+ECMAScript文档始终明确表示数学值与`Numbers` 或 `BigInts`之间的转换。
+
+以下有几个定义：
+
+1. `𝔽(x)`：从数学值或扩展数学值x到数字(Number)的转换
+2. `ℤ(x)`：从整数x到BigInt的转换
+3. `ℝ(x)`：从数字或BigInt到数学值的转换
+
+
+<Note>
+  注意
+  - +0F和-0F的数学值是数学值0。
+  - 非有限值的数学值没有定义。
+  - x的扩展数学值是有限值x的数学值，分别为+∞F和-∞F的+∞和-∞；它没有为NaN定义。
+</Note>
+
+<Blockquote>
+1. If x is NaN or y is NaN, return NaN.
+2. If x is +∞𝔽 and y is -∞𝔽, return NaN.
+3. If x is -∞𝔽 and y is +∞𝔽, return NaN.
+4. If x is either +∞𝔽 or -∞𝔽, return x.
+5. If y is either +∞𝔽 or -∞𝔽, return y.
+6. Assert: x and y are both finite.
+7. If x is -0𝔽 and y is -0𝔽, return -0𝔽.
+8. Return 𝔽(ℝ(x) + ℝ(y)).
+</Blockquote>
+
+```ts
+export function add(x: number, y: number): number {
+  // If x is NaN or y is NaN, return NaN.
+  if(isNaN(x) || isNaN(y)) return NaN;
+  // If x is +∞𝔽 and y is -∞𝔽, return NaN.
+  // If x is -∞𝔽 and y is +∞𝔽, return NaN.
+  if(x === Infinity && y === -Infinity || x === -Infinity && y === Infinity) return NaN;
+
+  // If x is either +∞𝔽 or -∞𝔽, return x.
+  if(x === Infinity || x === -Infinity) return x;
+  // If y is either +∞𝔽 or -∞𝔽, return y.
+  if(y === Infinity || y === -Infinity) return y;
+
+  // Assert: x and y are both finite.
+  if(!isFinite(x) || !isFinite(y)) {
+    throw new Error('Assertion failed: x and y must be finite.')
+  }
+  // If x is -0𝔽 and y is -0𝔽, return -0𝔽.
+  if(isNegativeZero(x as ESZeroType) && isNegativeZero(y as ESZeroType)) return -0;
+  // Otherwise, return x + y.
+  return x + y
+}
+```
+
+### subtract
+
+抽象运算`suttract`接受参数`x`（一个Number）和`y`（一个Number）并返回一个`Number`。
+
+它执行减法，产生其操作数的差异；
+x是**minuend**，y是**subtrahend**。调用时，它会执行以下步骤：
+
+```md
+1. Return add(x, unaryMinus(y))
+```
+
+### equal
+
+抽象操作 `equal` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。调用时，它会执行以下步骤：
+
+<Blockquote>
+1. If x is NaN, return false.
+2. If y is NaN, return false.
+3. If x is y, return true.
+4. If x is +0𝔽 and y is -0𝔽, return true.
+5. If x is -0𝔽 and y is +0𝔽, return true.
+6. Return false.
+</Blockquote>
+
+
+除了`NaN`, 其他类型的值都是零值比较
+
+```ts
+export function equal(x: number, y: number): boolean {
+  // for special NaN values
+  if(x !== x || y !== y) return false;
+  return x === y
+}
+```
+
+### multiply
+
+抽象操作 `multiply` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。
+
+调用时，它根据[IEEE 754-2019](https://tc39.es/ecma262/#sec-bibliography)二进制双精度算术的规则执行乘法，产生`x`和`y`的乘积。
+调用时，它会执行以下步骤：
+
+<Blockquote>
+
+1. If x is NaN or y is NaN, return NaN.
+2. If x is either +∞𝔽 or -∞𝔽, then
+  a. If y is either +0𝔽 or -0𝔽, return NaN.
+  b. If y > +0𝔽, return x.
+  c. Return -x.
+3. If y is either +∞𝔽 or -∞𝔽, then
+  a. If x is either +0𝔽 or -0𝔽, return NaN.
+  b. If x > +0𝔽, return y.
+  c. Return -y.
+4. If x is -0𝔽, then
+  a. If y is -0𝔽 or y < -0𝔽, return +0𝔽.
+  b. Else, return -0𝔽.
+5. If y is -0𝔽, then
+  a. If x < -0𝔽, return +0𝔽.
+  b. Else, return -0𝔽.
+6. Return 𝔽(ℝ(x) × ℝ(y)).
+</Blockquote>
+
+
+```ts
+export function multiply(x: number, y: number): boolean {
+  if(isNaN(x) && isNaN(y)) return NaN;
+
+  if(x === -Infinity || x === Infinity) {
+    if(isNegativeZero(y as ESZeroType) || !isNegativeZero(y as ESZeroType)) return NaN;
+    if(y > 0) return x;
+    return -x
+  }
+
+  if(y === -Infinity || y === Infinity) {
+    if(isNegativeZero(x as ESZeroType) || !isNegativeZero(x as ESZeroType)) return NaN;
+    if(x > 0) return y;
+    return -y
+  }
+
+  if(isNegativeZero(x as ESZeroType)) {
+    if(isNegativeZero(y as ESZeroType) || y < 0) return 0;
+    return -0
+  }
+
+  if(isNegativeZero(y as ESZeroType)) {
+    if(isNegativeZero(x as ESZeroType) || x < 0) return 0;
+    return -0
+  }
+  return x * y
+}
+```
+
+### divide
+
+抽象操作 `divide` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。
+
+调用时，它根据[IEEE 754-2019](https://tc39.es/ecma262/#sec-bibliography)二进制双精度算术的规则执行除法法，产生`x`和`y`的商。
+调用时，它会执行以下步骤：
+
+<Blockquote>
+
+1. If x is NaN or y is NaN, return NaN.
+2. If x is either +∞𝔽 or -∞𝔽, then
+  a. If y is either +∞𝔽 or -∞𝔽, return NaN.
+  b. If y is +0𝔽 or y > +0𝔽, return x.
+  c. Return -x.
+3. If y is +∞𝔽, then
+  a. If x is +0𝔽 or x > +0𝔽, return +0𝔽. Otherwise, return -0𝔽.
+4. If y is -∞𝔽, then
+  a. If x is +0𝔽 or x > +0𝔽, return -0𝔽. Otherwise, return +0𝔽.
+5. If x is either +0𝔽 or -0𝔽, then
+  a. If y is either +0𝔽 or -0𝔽, return NaN.
+  b. If y > +0𝔽, return x.
+  c. Return -x.
+6. If y is +0𝔽, then
+  a. If x > +0𝔽, return +∞𝔽. Otherwise, return -∞𝔽.
+7. If y is -0𝔽, then
+  a. If x > +0𝔽, return -∞𝔽. Otherwise, return +∞𝔽.
+8. Return 𝔽(ℝ(x) / ℝ(y)).
+</Blockquote>
+
+
+```ts
+export function divide(x: number, y: number): number {
+
+  // 1. If x is NaN or y is NaN, return NaN.
+  if(isNaN(x) && isNaN(y)) return NaN;
+
+  if(x === -Infinity || x === Infinity) {
+    if(y === -Infinity || y === Infinity) return NaN;
+    if(y >= 0) return x;
+    return -x
+  }
+
+  if(y === -Infinity) {
+    if(!isNegativeZero(x as ESZeroType) || x > +0) return -0;
+    return +0
+  }
+
+  if(y === Infinity) {
+    if(!isNegativeZero(x as ESZeroType) || x > +0) return +0;
+    return -0
+  }
+
+  if(isNegativeZero(x as ESZeroType) || !isNegativeZero(x as ESZeroType)) {
+    if(isNegativeZero(y as ESZeroType) || !isNegativeZero(y as ESZeroType)) return NaN;
+    if(y > +0) return x;
+    return -x
+  }
+
+  // 1/0
+  // -1/0
+  if(!isNegativeZero(y as ESZeroType)) {
+    if(x > 0) return +Infinity
+    return -Infinity
+  }
+
+  // 1/-0
+  // -1/-0
+  if(isNegativeZero(y as ESZeroType)) {
+    if(x > 0) return -Infinity
+    return +Infinity
+  }
+
+  return x / y;
+}
+```
+
+### reminder
+
+抽象操作`remainder`接受参数`n`和`d`（一个数字）并返回一个数字。它从其操作数的隐含除法中产生余数，其中n是除数，d是除数。
+调用时，它会执行以下步骤：
+
+<Blockquote>
+
+1. If n is NaN or d is NaN, return NaN.
+2. If n is either +∞𝔽 or -∞𝔽, return NaN.
+3. If d is either +∞𝔽 or -∞𝔽, return n.
+4. If d is either +0𝔽 or -0𝔽, return NaN.
+5. If n is either +0𝔽 or -0𝔽, return n.
+6. Assert: n and d are finite and non-zero.
+7. Let quotient be ℝ(n) / ℝ(d).
+8. Let q be truncate(quotient).
+9. Let r be ℝ(n) - (ℝ(d) × q).
+10. If r = 0 and n < -0𝔽, return -0𝔽.
+11. Return 𝔽(r).
+</Blockquote>
+
+
+```ts
+export function reminder(n: number, d: number): number {
+
+  // 1. If n is NaN or d is NaN, return NaN.
+  if(isNaN(n) || isNaN(d)) return NaN;
+
+  if(n === Infinity || n === -Infinity) return NaN;
+
+  if(d === Infinity || d === -Infinity) return n;
+
+  if(isNegativeZero(d as ESZeroType) || !isNegativeZero(d as ESZeroType)) return NaN;
+
+  if(isNegativeZero(n as ESZeroType) || !isNegativeZero(n as ESZeroType)) return n;
+
+  if(n === 0 || d === 0 || !isFinite(d) || !isFinite(n)) {
+    throw new Error('Assertion failed: n and d must be finite.')
+  }
+
+  let quotient = n / d;
+
+  // 数学函数截断（x）通过向零四舍五入去除x的分数部分，如果x < 0，则产生-floor（-x），否则产生floor（x）。
+  let q = truncate(quotient);
+
+  let r = n - (d * q);
+
+  if(r === 0 && n < -0) return -0;
+
+  return r;
+}
+
+// 符号“x modulo y”（y必须是有限和非零）计算与y（或零）相同符号的值k，
+// 这样对于一些整数q，abs(k) < abs(y)和x - k = q × y。
+export function modulo(x: number, y: number) {
+  // Step 1: Ensure y is finite and non-zero
+  if (!Number.isFinite(y) || y === 0) {
+    throw new Error("y must be finite and non-zero");
+  }
+
+  // Step 2: Calculate the remainder of the division of x by y
+  let remainder = x % y;
+
+  // Step 3: Adjust the result based on the sign of y
+  if ((y > 0 && remainder < 0) || (y < 0 && remainder > 0)) {
+    remainder += y;
+  }
+
+  return remainder;
+}
+
+export function floor(x: number) {
+  return x - modulo(x, 1)
+}
+
+// 数学函数截断（x）通过向零四舍五入去除x的分数部分，如果x < 0，则产生-floor（-x），否则产生floor（x）。
+export function truncate(x: number) {
+  if(x < 0) return -floor(-x);
+  return floor(x);
+}
+
+```
+
+### sameValue
+
+抽象操作 `sameValue` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。调用时，它会执行以下步骤：
+
+<Blockquote>
+
+1. If x is NaN and y is NaN, return true.
+2. If x is +0𝔽 and y is -0𝔽, return false.
+3. If x is -0𝔽 and y is +0𝔽, return false.
+4. If x is y, return true.
+5. Return false.
+</Blockquote>
+
+
+```ts
+// 同值比较 Object.is 在number中的应用
+export function sameValue(x: number, y: number): boolean {
+
+  // x = NaN y = NaN
+  if(isNaN(x) && isNaN(y)) return true;
+
+  // x = +0 && y = -0
+  // x = -0 && y = +0
+  if(
+    (!isNegativeZero(x) && isNegativeZero(y)) ||
+    (isNegativeZero(x) && !isNegativeZero(y))
+  ) return false;
+
+  return x === y
+}
+```
+
+从上述看到，`Object.is`在number中的值比较是**同值比较**，特殊场景`x==y`都相同
+且都是`NaN`的情况下，也是相等的；
+
+**注意，这里排除了`0`和`-0`相同的情况**，如果要让两者相等，使用零值比较的方法[sameValueZero](/operations/number/sameValueZero)
+
+
+### sameValueZero
+
+抽象操作 `sameValueZero` 接受参数`x(Number)`和`y(Number)`，并返回一个布尔值。调用时，它会执行以下步骤：
+
+<Blockquote>
+
+1. If x is NaN and y is NaN, return true.
+2. If x is +0𝔽 and y is -0𝔽, return true.
+3. If x is -0𝔽 and y is +0𝔽, return true.
+4. If x is y, return true.
+5. Return false.
+</Blockquote>
+
+
+```ts
+// 零值比较
+export function sameValueZero(x: number, y: number): boolean {
+  // (x !== x && y !== y) like isNaN(x) isNaN(y)
+  return x === y || (x !== x && y !== y)
+}
+```

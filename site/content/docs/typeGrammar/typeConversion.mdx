@@ -1,0 +1,78 @@
+---
+title: Type Conversion
+excerpt: Type Conversion overview
+date: 2023-01-23
+type: Docs
+subType: blog
+category: TypeConversion
+tags: TypeConversion
+---
+
+
+## ToPrimitive
+
+抽象操作 `ToPrimitive` 采用参数输入（ECMAScript语言值）和可选参数`ferredType（STRING或NUMBER）`，
+并返回包含ECMAScript语言值或抛出完成的正常完成。它将其输入参数转换为非对象类型。
+如果一个对象能够转换为多个原始类型，它可以使用可选的hint preferredType来支持该类型。
+调用时，它会执行以下步骤：
+
+
+  1. If input is an Object, then
+  a. Let exoticToPrim be ? GetMethod(input, @@toPrimitive).
+  b. If exoticToPrim is not undefined, then
+  i. If preferredType is not present, then
+  1. Let hint be "default".
+  ii. Else if preferredType is STRING, then
+  1. Let hint be "string".
+  iii. Else,
+  1. Assert: preferredType is NUMBER.
+  2. Let hint be "number".
+  iv. Let result be ? Call(exoticToPrim, input, « hint »).
+  v. If result is not an Object, return result.
+  vi. Throw a TypeError exception.
+  c. If preferredType is not present, let preferredType be NUMBER.
+  d. Return ? OrdinaryToPrimitive(input, preferredType).
+  2. Return input.
+
+
+## ToBoolean
+
+
+## ToNumber
+
+## ToString
+
+## ToObject
+
+
+<Note>
+  抽象操作符*ToObject*接收参数(ECMAScript language value)并且返回一个*
+  normal completion*或者*throw completion*
+</Note>
+
+转化表如下：
+
+| argument Type	       | Result	            |
+| :------------------- | :----------------- |
+| Undefined            | Throw a TypeError exception |
+| Null                 | Throw a TypeError exception |
+| Boolean              | return a new Boolean object whose [[BooleanData]] internal slot  |
+| Number               | return a new Number object whose [[NumberData]] internal slot  |
+| String               | return a new String object whose [[StringData]] internal slot  |
+| Symbol               | return a new Symbol object whose [[SymbolData]] internal slot  |
+| BigInt               | return a new BigInt object whose [[BigIntData]] internal slot  |
+| Object               | Return argument |
+
+
+实现如下，源码[实现](https://github.com/Wangbaoqi/ESPolyfill/blob/main/packages/nant-es-core/internals/to-object.ts)
+
+```ts
+import requireObjectCoercible from "./require-object-coercible";
+
+// https://tc39.es/ecma262/#sec-toobject
+export default function toObject(it: any) {
+  return Object(requireObjectCoercible(it))
+}
+```
+
+

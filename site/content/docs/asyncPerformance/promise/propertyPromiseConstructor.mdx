@@ -1,0 +1,255 @@
+---
+title: Properties of the Promise constructor
+excerpt: Properties of the Promise constructor
+date: 2023-01-23
+type: Docs
+category: ControlObjects
+tags: controlObjects
+---
+
+
+The Promise constructor:
+
+- has a `[[Prototype]]` internal slot whose value is %Function.prototype%.
+- has the following properties:
+
+## Promise.all
+
+This function returns a new promise which is fulfilled with an array of fulfillment values for the passed
+promises, or rejects with the reason of the first passed promise that rejects. It resolves all elements of
+the passed iterable to promises as it runs this algorithm.
+
+<Blockquote>
+1. Let C be the this value.
+2. Let promiseCapability be ? NewPromiseCapability(C).
+3. Let promiseResolve be Completion(GetPromiseResolve(C)).
+4. IfAbruptRejectPromise(promiseResolve, promiseCapability).
+5. Let iteratorRecord be Completion(GetIterator(iterable, SYNC)).
+6. IfAbruptRejectPromise(iteratorRecord, promiseCapability).
+7. Let result be Completion(PerformPromiseAll(iteratorRecord, C, promiseCapability, promiseResolve)).
+8. If result is an abrupt completion, then
+a. If iteratorRecord.[[Done]] is false, set result to Completion(IteratorClose(iteratorRecord, result)).
+b. IfAbruptRejectPromise(result, promiseCapability).
+9. Return ? result.
+</Blockquote>
+
+<Note>
+NOTE<br/>
+This function requires its this value to be a constructor function that supports the parameter conventions
+of the Promise constructor.
+</Note>
+
+### GetPromiseResolve
+
+The abstract operation GetPromiseResolve takes argument promiseConstructor (a constructor) and returns either a normal completion containing a function object or a throw completion. It performs the following steps when called:
+
+<Blockquote>
+1. Let promiseResolve be ? Get(promiseConstructor, "resolve").
+2. If IsCallable(promiseResolve) is false, throw a TypeError exception.
+3. Return promiseResolve.
+</Blockquote>
+
+### PerformPromiseAll
+
+The abstract operation PerformPromiseAll takes arguments
+*iteratorRecord* (an Iterator Record), *constructor* (a constructor), *resultCapability* (a PromiseCapability Record),
+and *promiseResolve* (a function object) and returns either a normal completion containing an ECMAScript language value or a throw completion.
+
+It performs the following steps when called:
+
+<Blockquote>
+1. Let values be a new empty List.
+2. Let remainingElementsCount be the Record { `[[Value]]: 1` }.
+3. Let index be 0.
+4. Repeat,
+a. Let next be ? IteratorStepValue(iteratorRecord).
+b. If next is DONE, then
+i. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] - 1.
+ii. If remainingElementsCount.[[Value]] = 0, then
+1. Let valuesArray be CreateArrayFromList(values).
+2. Perform ? Call(resultCapability.[[Resolve]], undefined, « valuesArray »).
+iii. Return resultCapability.[[Promise]].
+c. Append undefined to values.
+d. Let nextPromise be ? Call(promiseResolve, constructor, « next »).
+e. Let steps be the algorithm steps defined in Promise.all Resolve Element Functions.
+f. Let length be the number of non-optional parameters of the function definition in Promise.all Resolve Element Functions.
+g. Let onFulfilled be CreateBuiltinFunction(steps, length, "", « [[AlreadyCalled]], [[Index]], [[Values]], [[Capability]], [[RemainingElements]] »).
+h. Set onFulfilled.[[AlreadyCalled]] to false.
+i. Set onFulfilled.[[Index]] to index.
+j. Set onFulfilled.[[Values]] to values.
+k. Set onFulfilled.[[Capability]] to resultCapability.
+l. Set onFulfilled.[[RemainingElements]] to remainingElementsCount.
+m. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] + 1.
+n. Perform ? Invoke(nextPromise, "then", « onFulfilled, resultCapability.[[Reject]] »).
+o. Set index to index + 1.
+</Blockquote>
+
+### Promise.all Resolve Element Functions
+
+A Promise.all resolve element function is an anonymous built-in function that is used to resolve a specific Promise.all element.
+Each Promise.all resolve element function has `[[Index]]`, `[[Values]]`, `[[Capability]]`, `[[RemainingElements]]`, and `[[AlreadyCalled]]` internal slots.
+
+When a Promise.all resolve element function is called with argument x, the following steps are taken:
+
+<Blockquote>
+1. Let F be the active function object.
+2. If F.[[AlreadyCalled]] is true, return undefined.
+3. Set F.[[AlreadyCalled]] to true.
+4. Let index be F.[[Index]].
+5. Let values be F.[[Values]].
+6. Let promiseCapability be F.[[Capability]].
+7. Let remainingElementsCount be F.[[RemainingElements]].
+8. Set values[index] to x.
+9. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] - 1.
+10. If remainingElementsCount.[[Value]] = 0, then
+a. Let valuesArray be CreateArrayFromList(values).
+b. Return ? Call(promiseCapability.[[Resolve]], undefined, « valuesArray »).
+11. Return undefined.
+The "length" property of a Promise.all resolve element function is 1𝔽.
+</Blockquote>
+
+## Promise.allSettled
+
+This function returns a promise that is fulfilled with an array of promise state snapshots,
+but only after all the original promises have settled,
+i.e. become either fulfilled or rejected. It resolves all elements of the passed iterable to promises as it runs this algorithm.
+
+<Blockquote>
+
+1. Let C be the this value.
+2. Let promiseCapability be ? NewPromiseCapability(C).
+3. Let promiseResolve be Completion(GetPromiseResolve(C)).
+4. IfAbruptRejectPromise(promiseResolve, promiseCapability).
+5. Let iteratorRecord be Completion(GetIterator(iterable, SYNC)).
+6. IfAbruptRejectPromise(iteratorRecord, promiseCapability).
+7. Let result be Completion(PerformPromiseAllSettled(iteratorRecord, C, promiseCapability, promiseResolve)).
+8. If result is an abrupt completion, then
+a. If iteratorRecord.[[Done]] is false, set result to Completion(IteratorClose(iteratorRecord, result)).
+b. IfAbruptRejectPromise(result, promiseCapability).
+9. Return ? result.
+</Blockquote>
+
+
+<Note>
+This function requires its this value to be a constructor function that supports the parameter conventions of the Promise constructor.
+</Note>
+
+### PerformPromiseAllSettled ( iteratorRecord, constructor, resultCapability, promiseResolve )
+
+The abstract operation *PerformPromiseAllSettled* takes arguments *iteratorRecord* (an Iterator Record),
+*constructor* (a constructor), *resultCapability* (a PromiseCapability Record), and *promiseResolve* (a function object)
+and returns either a *normal completion containing an ECMAScript language* value or a throw completion.
+
+It performs the following steps when called:
+
+<Blockquote>
+1. Let values be a new empty List.
+2. Let remainingElementsCount be the Record { `[[Value]]: 1` }.
+3. Let index be 0.
+4. Repeat,
+a. Let next be ? IteratorStepValue(iteratorRecord).
+b. If next is DONE, then
+i. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] - 1.
+ii. If remainingElementsCount.[[Value]] = 0, then
+1. Let valuesArray be CreateArrayFromList(values).
+2. Perform ? Call(resultCapability.[[Resolve]], undefined, « valuesArray »).
+iii. Return resultCapability.[[Promise]].
+c. Append undefined to values.
+d. Let nextPromise be ? Call(promiseResolve, constructor, « next »).
+e. Let stepsFulfilled be the algorithm steps defined in Promise.allSettled Resolve Element Functions.
+f. Let lengthFulfilled be the number of non-optional parameters of the function definition in Promise.allSettled Resolve Element Functions.
+g. Let onFulfilled be CreateBuiltinFunction(stepsFulfilled, lengthFulfilled, "", « [[AlreadyCalled]], [[Index]], [[Values]], [[Capability]], [[RemainingElements]] »).
+h. Let alreadyCalled be the Record { `[[Value]]: false` }.
+i. Set onFulfilled.[[AlreadyCalled]] to alreadyCalled.
+j. Set onFulfilled.[[Index]] to index.
+k. Set onFulfilled.[[Values]] to values.
+l. Set onFulfilled.[[Capability]] to resultCapability.
+m. Set onFulfilled.[[RemainingElements]] to remainingElementsCount.
+n. Let stepsRejected be the algorithm steps defined in Promise.allSettled Reject Element Functions.
+o. Let lengthRejected be the number of non-optional parameters of the function definition in Promise.allSettled Reject Element Functions.
+p. Let onRejected be CreateBuiltinFunction(stepsRejected, lengthRejected, "", « [[AlreadyCalled]], [[Index]], [[Values]], [[Capability]], [[RemainingElements]] »).
+q. Set onRejected.[[AlreadyCalled]] to alreadyCalled.
+r. Set onRejected.[[Index]] to index.
+s. Set onRejected.[[Values]] to values.
+t. Set onRejected.[[Capability]] to resultCapability.
+u. Set onRejected.[[RemainingElements]] to remainingElementsCount.
+v. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] + 1.
+w. Perform ? Invoke(nextPromise, "then", « onFulfilled, onRejected »).
+x. Set index to index + 1.
+</Blockquote>
+
+### Promise.allSettled Resolve Element Functions
+
+A Promise.allSettled resolve element function is an anonymous built-in function that is used to resolve a specific Promise.allSettled element.
+Each Promise.allSettled resolve element function has `[[Index]]`, `[[Values]]`, `[[Capability]]`, `[[RemainingElements]]`, and `[[AlreadyCalled]]` internal slots.
+
+When a Promise.allSettled resolve element function is called with argument x, the following steps are taken:
+
+<Blockquote>
+1. Let F be the active function object.
+2. Let alreadyCalled be F.[[AlreadyCalled]].
+3. If alreadyCalled.[[Value]] is true, return undefined.
+4. Set alreadyCalled.[[Value]] to true.
+5. Let index be F.[[Index]].
+6. Let values be F.[[Values]].
+7. Let promiseCapability be F.[[Capability]].
+8. Let remainingElementsCount be F.[[RemainingElements]].
+9. Let obj be OrdinaryObjectCreate(%Object.prototype%).
+10. Perform ! CreateDataPropertyOrThrow(obj, "status", "fulfilled").
+11. Perform ! CreateDataPropertyOrThrow(obj, "value", x).
+12. Set values[index] to obj.
+13. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] - 1.
+14. If remainingElementsCount.[[Value]] = 0, then
+a. Let valuesArray be CreateArrayFromList(values).
+b. Return ? Call(promiseCapability.[[Resolve]], undefined, « valuesArray »).
+15. Return undefined.
+The "length" property of a Promise.allSettled resolve element function is 1𝔽.
+</Blockquote>
+
+### Promise.allSettled Reject Element Functions
+
+A Promise.allSettled reject element function is an anonymous built-in function that is used to
+reject a specific Promise.allSettled element. Each Promise.allSettled reject element function
+has `[[Index]]`, `[[Values]]`, `[[Capability]]`, `[[RemainingElements]]`, and `[[AlreadyCalled]]` internal slots.
+
+When a Promise.allSettled reject element function is called with argument x, the following steps are taken:
+
+<Blockquote>
+1. Let F be the active function object.
+2. Let alreadyCalled be F.[[AlreadyCalled]].
+3. If alreadyCalled.[[Value]] is true, return undefined.
+4. Set alreadyCalled.[[Value]] to true.
+5. Let index be F.[[Index]].
+6. Let values be F.[[Values]].
+7. Let promiseCapability be F.[[Capability]].
+8. Let remainingElementsCount be F.[[RemainingElements]].
+9. Let obj be OrdinaryObjectCreate(%Object.prototype%).
+10. Perform ! CreateDataPropertyOrThrow(obj, "status", "rejected").
+11. Perform ! CreateDataPropertyOrThrow(obj, "reason", x).
+12. Set values[index] to obj.
+13. Set remainingElementsCount.[[Value]] to remainingElementsCount.[[Value]] - 1.
+14. If remainingElementsCount.[[Value]] = 0, then
+a. Let valuesArray be CreateArrayFromList(values).
+b. Return ? Call(promiseCapability.[[Resolve]], undefined, « valuesArray »).
+15. Return undefined.
+</Blockquote>
+
+The "length" property of a Promise.allSettled reject element function is 1𝔽.
+
+
+## Promise.any
+
+
+## Promise.prototype
+
+
+## Promise.race
+
+
+## Promise.reject
+
+## Promise.resolve
+
+## Promise.withResolvers
+
+## get Promise[@@species]

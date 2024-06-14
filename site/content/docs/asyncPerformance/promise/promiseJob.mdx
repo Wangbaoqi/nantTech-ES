@@ -1,0 +1,75 @@
+---
+title: Promise Job
+excerpt: Promise Job
+date: 2023-01-23
+type: Docs
+category: ControlObjects
+tags: controlObjects
+---
+
+## NewPromiseReactionJob
+
+抽象操作 `NewPromiseReactionJob` 接收参数 *reaction* (a PromiseReaction Record) 和参数 *argument* (an ECMAScript language value)
+并且返回一个 `[[Job]]` (a Job Abstract Closure) 和 `[[Realm]]` (a Realm Record or null) 的Record fields。
+
+它返回一个新的*Job Abstract Closure*，将适当的处理程序应用传入值，并且使用处理程序的返回值来解析或者拒绝与该处理程序相关的派生承诺。调用时，它会执行以下步骤：
+
+<Blockquote>
+1. Let job be a new Job Abstract Closure with no parameters that captures reaction and argument and performs the following steps when called:
+a. Let promiseCapability be reaction.[[Capability]].
+b. Let type be reaction.[[Type]].
+c. Let handler be reaction.[[Handler]].
+d. If handler is EMPTY, then
+i. If type is FULFILL, then
+1. Let handlerResult be NormalCompletion(argument).
+ii. Else,
+1. Assert: type is REJECT.
+2. Let handlerResult be ThrowCompletion(argument).
+e. Else,
+i. Let handlerResult be Completion(HostCallJobCallback(handler, undefined, « argument »)).
+f. If promiseCapability is undefined, then
+i. Assert: handlerResult is not an abrupt completion.
+ii. Return EMPTY.
+g. Assert: promiseCapability is a PromiseCapability Record.
+h. If handlerResult is an abrupt completion, then
+i. Return ? Call(promiseCapability.[[Reject]], undefined, « handlerResult.[[Value]] »).
+i. Else,
+i. Return ? Call(promiseCapability.[[Resolve]], undefined, « handlerResult.[[Value]] »).
+2. Let handlerRealm be null.
+3. If reaction.[[Handler]] is not EMPTY, then
+a. Let getHandlerRealmResult be Completion(GetFunctionRealm(reaction.[[Handler]].[[Callback]])).
+b. If getHandlerRealmResult is a normal completion, set handlerRealm to getHandlerRealmResult.[[Value]].
+c. Else, set handlerRealm to the current Realm Record.
+d. NOTE: handlerRealm is never null unless the handler is undefined.
+When the handler is a revoked Proxy and no ECMAScript code runs, handlerRealm is used to create error objects.
+4. Return the Record { `[[Job]]: job`, `[[Realm]]: handlerRealm` }.
+</Blockquote>
+
+
+## NewPromiseResolveThenableJob
+
+抽象操作*NewPromiseResolveThenableJob*接受参数*promiseToResolve*（一个Promise），*thenable*（一个对象）, *then*（一个JobCallback记录），
+并返回一个带有字段`[[Job]]`（作业抽象闭包）和`[[Realm]]`（Realm记录）的记录。
+
+调用时，它会执行以下步骤：
+
+<Blockquote>
+1. Let job be a new Job Abstract Closure with no parameters that captures promiseToResolve, thenable, and then and performs the following steps when called:
+a. Let resolvingFunctions be CreateResolvingFunctions(promiseToResolve).
+b. Let thenCallResult be Completion(HostCallJobCallback(then, thenable, « resolvingFunctions.[[Resolve]], resolvingFunctions.[[Reject]] »)).
+c. If thenCallResult is an abrupt completion, then
+i. Return ? Call(resolvingFunctions.[[Reject]], undefined, « thenCallResult.[[Value]] »).
+d. Return ? thenCallResult.
+2. Let getThenRealmResult be Completion(GetFunctionRealm(then.[[Callback]])).
+3. If getThenRealmResult is a normal completion, let thenRealm be getThenRealmResult.[[Value]].
+4. Else, let thenRealm be the current Realm Record.
+5. NOTE: thenRealm is never null. When then.[[Callback]] is a revoked Proxy and no code runs, thenRealm is used to create error objects.
+6. Return the Record { `[[Job]]: job`, `[[Realm]]: thenRealm` }.
+</Blockquote>
+
+
+<Note>
+This Job uses the supplied thenable and its then method to resolve the given promise.
+This process must take place as a Job to ensure that the evaluation of the
+then method occurs after evaluation of any surrounding code has completed.
+</Note>

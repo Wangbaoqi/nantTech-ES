@@ -1,0 +1,35 @@
+---
+title: Specification Type
+excerpt: Specification Type overview
+date: 2023-01-23
+type: Docs
+category: DataType
+tags: dataType
+---
+
+
+## CompletionRecord
+
+
+*Completion Record* 规范类型用于**解释值和控制流的运行时传播**，例如执行非本地控制传输的语句
+（`break`、`continue`、`return`和`throw`）的行为。
+
+定义了以下的字段：
+
+| Field Name	         | Value	            | Meaning                |
+| :------------------- | :----------------- | :----------------------|
+| `[[Type]]`           | NORMAL, BREAK, CONTINUE,RETURN OR THROW | 发生时的完成类型 |
+| `[[Value]]`          | 任何值除了一个*Completion Record* | 产生的值 |
+| `[[Target]]`         | a String or EMPTY  | 定向控制转移的目标标签。 |
+
+以下速记术语有时用于指完成记录
+
+- *normal completion* refers to any Completion Record with a `[[Type]]` value of **NORMAL**.
+- *break completion* refers to any Completion Record with a `[[Type]]` value of **BREAK**.
+- *continue completion* refers to any Completion Record with a `[[Type]]` value of **CONTINUE**.
+- *return completion* refers to any Completion Record with a `[[Type]]` value of **RETURN**.
+- *throw completion* refers to any Completion Record with a `[[Type]]` value of **THROW**.
+- *abrupt completion* refers to any Completion Record with a `[[Type]]` value other than **NORMAL**.
+- a *normal completion* containing some type of value refers to a normal completion that has a value of that type in its `[[Value]]` field.
+
+ECMAScript规范中定义的**可调用对象仅返回*normal completion*或*throw completion***。返回任何其他类型的完成记录都被视为编辑错误。
