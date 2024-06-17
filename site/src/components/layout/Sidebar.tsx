@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import NextLink from 'next/link';
 
@@ -16,21 +16,40 @@ export const Sidebar = memo(function Sidebar(props: SidebarProps) {
   const { slug = [] } = props;
   const [root] = slug;
 
-  const { sidebar, setSidebar } = useSourceSidebar();
-
   const sidebarList = useMemo(() => {
     return sourceRoutes[root];
   }, [root]);
+
+  const [sidebar, setSidebar] = useState<sourceRoutesItemType[]>(sidebarList);
 
   useEffect(() => {
     setSidebar(sidebarList);
   }, [setSidebar, sidebarList]);
 
+  const setSidebarExpanded = useCallback(
+    (path: string) => {
+      setSidebar(
+        sidebar.map((item) => {
+          if (item?.items?.length && item.path === path) {
+            item.collapsed = !item.collapsed;
+          }
+          return { ...item };
+        })
+      );
+    },
+    [sidebar]
+  );
+
   return (
     <nav className='flex flex-col shrink-0 w-full box-border'>
-      {sidebarList?.map((item, idx) => {
+      {sidebar?.map((item, idx) => {
         return (
-          <SidebarDetail key={idx} item={item} breadcrumbs={sidebarList} />
+          <SidebarDetail
+            key={idx}
+            item={item}
+            breadcrumbs={sidebar}
+            setSidebarExpanded={setSidebarExpanded}
+          />
         );
       })}
     </nav>
@@ -65,23 +84,31 @@ function CollapseWrapper({
 function SidebarDetail(props: {
   item: sourceRoutesItemType;
   breadcrumbs: sourceRoutesItemType[];
+  setSidebarExpanded: (path: string) => void;
 }) {
-  const { item, breadcrumbs = [] } = props;
+  const { item, breadcrumbs = [], setSidebarExpanded } = props;
   const pathname = usePathname();
   const isActive = pathname === item.path;
 
-  console.log(pathname, 'pathname');
-  console.log(item.path, 'item path');
-
-  const isCollapsed = isActive || !!item.collapsed;
+  const isCollapsed = !!item.collapsed;
 
   return (
     <div className='p-0 m-0 bg-transparent border-none rounded-none'>
-      <SidebarItem item={item} isActive={isActive} isCollapsed={isCollapsed} />
+      <SidebarItem
+        item={item}
+        isActive={isActive}
+        isCollapsed={isCollapsed}
+        setSidebarExpanded={setSidebarExpanded}
+      />
       <CollapseWrapper duration={100} isExpanded={isCollapsed}>
         {item?.items?.map((item: sourceRoutesItemType, idx: number) => {
           return (
-            <SidebarDetail key={idx} item={item} breadcrumbs={breadcrumbs} />
+            <SidebarDetail
+              key={idx}
+              item={item}
+              breadcrumbs={breadcrumbs}
+              setSidebarExpanded={setSidebarExpanded}
+            />
           );
         })}
       </CollapseWrapper>
@@ -111,10 +138,11 @@ const SidebarItem = memo(function SidebarItem(props: {
   item: sourceRoutesItemType;
   isActive: boolean;
   isCollapsed: boolean;
+  setSidebarExpanded: (path: string) => void;
 }) {
-  const { item, isActive, isCollapsed } = props;
+  const { item, isActive, isCollapsed, setSidebarExpanded } = props;
   const Icon = item.icon;
-  const { setSidebarExpanded } = useSourceSidebar();
+  // const { setSidebarExpanded } = useSourceSidebar();
   const isChild = item?.items?.length;
   const cls = clsx(
     'flex justify-between px-3 gap-[0.5rem] hover:no-underline cursor-pointer py-3 -outline-offset-1 lg:rounded-[8px] bg-transparent no-underline',

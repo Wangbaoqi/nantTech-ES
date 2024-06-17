@@ -25,7 +25,7 @@ export type sourceRoutesItemType = {
 const typeGrammar = [
   {
     name: 'Data Type',
-    path: '/docs/typeGrammar/languageType',
+    path: '/docs/typeGrammar',
     icon: IconOverview,
     collapsed: false,
     items: [
