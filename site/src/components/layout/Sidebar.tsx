@@ -70,7 +70,10 @@ function SidebarDetail(props: {
   const pathname = usePathname();
   const isActive = pathname === item.path;
 
-  const isCollapsed = !!item.collapsed;
+  console.log(pathname, 'pathname');
+  console.log(item.path, 'item path');
+
+  const isCollapsed = isActive || !!item.collapsed;
 
   return (
     <div className='p-0 m-0 bg-transparent border-none rounded-none'>

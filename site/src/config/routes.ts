@@ -25,7 +25,7 @@ export type sourceRoutesItemType = {
 const typeGrammar = [
   {
     name: 'Data Type',
-    path: '/docs/typeGrammar',
+    path: '/docs/typeGrammar/languageType',
     icon: IconOverview,
     collapsed: false,
     items: [
@@ -116,7 +116,7 @@ const asyncPerformance = [
 const reference = [
   {
     name: 'Global Object',
-    path: '/docs/reference/global',
+    path: '/docs/reference/global/value',
     icon: IconOverview,
     collapsed: false,
     items: [
