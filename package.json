@@ -2,8 +2,8 @@
   "name": "nant-es",
   "private": true,
   "scripts": {
-		"dev:docs": "pnpm --dir ./site dev",
-		"build:docs": "pnpm --dir ./site build"
+		"dev:docs": "pnpm --dir ./docs dev",
+		"build:docs": "pnpm --dir ./docs build"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",

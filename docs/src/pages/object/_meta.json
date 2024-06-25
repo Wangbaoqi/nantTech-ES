@@ -1,9 +1,0 @@
-{
-  "ordinaryObject": "ordinaryObject",
-  "functionObject": "functionObject",
-  "buildInObject": "buildInObject",
-  "proxyObject": "proxyObject",
-  "globalObject": "globalObject",
-  "numberDates": "numberDates",
-  "fundamentalObject": "fundamentalObject"
-}

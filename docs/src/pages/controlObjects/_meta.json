@@ -1,9 +1,0 @@
-{
-  "iteration": "Iteration",
-  "promiseObject": "PromiseObject",
-  "generatorFunction": "GeneratorFunction",
-  "asyncGeneratorFunction": "AsyncGeneratorFunction",
-  "generatorObject": "GeneratorObject",
-  "asyncGeneratorObject": "AsyncGeneratorObject",
-  "asyncFunction": "AsyncFunction Objects"
-}

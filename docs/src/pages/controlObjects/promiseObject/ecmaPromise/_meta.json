@@ -1,8 +1,0 @@
-{
-  "overview": "overview",
-  "abstractOperations": "Abstract Operations",
-  "promiseJob": "Promise Job",
-  "promiseConstructor": "Promise Constructor",
-  "propertyPromiseConstructor": "Property of Constructor",
-  "propertyPromisePrototype": "Property of Prototype"
-}
