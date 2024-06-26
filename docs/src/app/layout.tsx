@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { fontSans, firaMono, ysabeauOffice } from '@/app/fonts';
 
 import '@/styles/globals.css';
+import 'katex/dist/katex.min.css';
 
 const bodyClsx = clsx(
   // fontSans.variable,

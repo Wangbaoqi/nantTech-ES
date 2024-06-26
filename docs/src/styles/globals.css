@@ -149,6 +149,10 @@ body {
   position: relative;
 }
 
+/*  katex */
+.katex {
+  font: inherit !important;
+}
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome Safari */

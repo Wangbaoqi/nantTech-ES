@@ -88,6 +88,10 @@ const typeGrammar = [
       {
         name: 'Unicode',
         path: '/docs/typeGrammar/other/unicode'
+      },
+      {
+        name: 'Terminology',
+        path: '/docs/typeGrammar/other/terms'
       }
     ]
   }

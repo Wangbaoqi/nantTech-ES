@@ -121,7 +121,7 @@ const Tcol: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
 
 const List: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
-    <ul className='list-disc flex flex-col gap-2 ml-4 mt-2 [&>li]:pl-0.5 [&>li>strong]:text-pink-500 dark:[&>li>strong]:text-cyan-600'>
+    <ul className='list-disc flex flex-col gap-2 ml-4 mt-2 [&>li]:pl-0.5 [&>li>strong]:text-fuchsia-500 dark:[&>li>strong]:text-purple-300'>
       {children}
     </ul>
   );
@@ -227,7 +227,7 @@ function CodeStep({ children, step }: { children: any; step: number }) {
     <span
       data-step={step}
       className={clsx(
-        'code-step bg-opacity-20 dark:bg-opacity-20 relative rounded px-[6px] py-[1.5px] border-b-[2px] border-opacity-60',
+        'code-step bg-opacity-20 dark:bg-opacity-20 relative rounded px-[6px] mr-1 py-[1.5px] border-b-[2px] border-opacity-60',
         {
           'bg-blue-600 border-blue-500 text-blue-700 dark:text-blue-300':
             step === 1,
@@ -263,6 +263,7 @@ export const MDXComponents = {
   ul: List,
   img: Image,
   a: Link,
+  Strong,
   Note,
   Wip,
   Pitfall,

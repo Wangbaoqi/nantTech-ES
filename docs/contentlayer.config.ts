@@ -2,6 +2,8 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { visit } from 'unist-util-visit';
 
 export const Post = defineDocumentType(() => ({
@@ -51,9 +53,10 @@ export default makeSource({
   contentDirPath: 'content',
   documentTypes: [Post, Docs],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkMath],
     rehypePlugins: [
       rehypeSlug,
+      [rehypeKatex, { strict: 'ignore' }],
       () => (tree) => {
         visit(tree, 'element', (node) => {
           if (node.tagName === 'code' && node.data && node.data.meta) {
