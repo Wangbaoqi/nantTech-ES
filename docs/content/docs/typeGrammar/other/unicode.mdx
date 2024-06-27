@@ -42,7 +42,7 @@ tags: typeConversion
 
 **编码字符集**是一组字符，每个字符都被分配了唯一的数字。编码字符集的单位称为码点。码位值表示字符在编码字符集中的位置。
 
-**码点**是 Unicode 字符集中每个字符的**唯一标识**，通常表示为 **U+XXXX** 的形式，其中 **XXXX** 是十六进制数字。
+**码点**是 Unicode 字符集中每个字符的**唯一标识**，通常表示为 **U+XXXX** 的形式，其中 **XXXX** 是[十六进制](/docs/typeGrammar/other/terms#十六进制hexadecimal)数字。
 
 **码点范围**从 U+0000 到 U+10FFFF，其中：
 - U+0000 到 U+007F：ASCII 字符集，包含基本的英文字母、数字和控制字符。
@@ -87,6 +87,126 @@ UTF-8 使用 1 至 4 个字节编码 Unicode 字符，根据字符的不同范�
 - 3 字节：1110xxxx 10xxxxxx 10xxxxxx （4 + 6 + 6 = 16 位）
 - 4 字节：11110xxx 10xxxxxx 10xxxxxx 10xxxxxx （3 + 6 + 6 + 6 = 21 位）
 
+<Note>
+`x`的补充规则：是将转换后的二进制从高位到低位依次补充。具体看下列例子，
+</Note>
+
 **编码示例**
 
-$$\sqrt{a^2 + b^2}$$
+<CodeStep step={1}>示例1: </CodeStep> 字符 “A” UTF-8 编码
+
+1. 获取其Unicode码点：$$ U+0041_{16} $$
+2. 转换为二进制：0100 0001
+3. 获取所需要的字节数：U+0041在 U+0000 到 U+007F范围内，因此需要一个字节
+4. 得到对应字节的编码规则以及按高位到低位补码：0xxxxxxx $$ \to $$ 0100 0001
+5. UTF-8表示：$$ 41_{16} $$
+
+
+<CodeStep step={1}>示例1: </CodeStep> 字符 “你” UTF-8 编码
+
+1. 获取其Unicode码点：$$ U+4F60_{16} $$
+2. 转换为二进制：0100 1111 0110 0000
+3. 获取所需要的字节数：$$ U+4F60 $$在 U+0800 至 U+FFFF范围内，因此需要三个字节
+4. 得到对应字节的编码规则以及按高位到低位补码：1110xxxx 10xxxxxx 10xxxxxx $$ \to $$ 11100100 10111101 10100000
+5. UTF-8表示：$$ E4BDA0_{16} $$
+
+### UTF-16
+
+UTF-16（16-bit Unicode Transformation Format）是一种将 Unicode 字符编码为**16位宽字符**的编码方式。
+它可以编码整个 Unicode 字符集（$$ U+0000 $$ 到 $$ U+10FFFF $$），并且使用一种可变长度的编码格式来处理不同的字符范围。
+
+<Note>
+<Strong className='text-purple-300'>16位宽字符</Strong>
+
+在早期的计算机系统中，字符通常使用 8 位（一个字节）表示，最多可以表示 256 个字符（如 ASCII 编码）。
+但是，随着计算机的普及，特别是在需要处理多种语言的国际环境中，256 个字符远远不够。因此，Unicode 标准被引入，
+试图为每种语言的所有字符分配一个唯一的代码点。
+
+为了处理 Unicode 字符集中的大量字符，尤其是那些超出 8 位表示范围的字符，16 位宽字符被引入。
+这种表示方式使用 16 位（2 字节）来表示一个字符，可以表示最多 65536（2<sup>16</sup>）个不同的字符。
+
+</Note>
+
+**基本原理**
+
+1. 基本多文种平面 (BMP)
+ - 范围： U+0000 到 U+FFFF
+ - BMP内的字符用**一个**16位单元表示
+
+2. 补充平面
+ - 范围：U+10000 到 U+10FFFF
+ - 超出BMP的字符使用**一对16位单元表示，称之为代理对**
+
+**编码规则**
+
+1. BMP内的字符
+BMP 内的字符直接用一个 16 位单元表示，其值与 Unicode 码点相同。
+
+2. 代理对
+对于补充平面字符（码点大于 U+FFFF），UTF-16 使用两个 16 位单元：
+  - 高代理项（High Surrogate）：从 U+D800 到 U+DBFF。
+  - 低代理项（Low Surrogate）：从 U+DC00 到 U+DFFF。
+
+**代理对的计算**
+
+对于一个 Unicode 码点 U（大于 U+FFFF），其代理对的计算步骤如下：
+
+1. 减去 U+10000，得到一个 20 位的数。
+2. 将这个 20 位的数分成高 10 位和低 10 位。
+3. 高 10 位加上 U+D800，得到高代理项。
+4. 低 10 位加上 U+DC00，得到低代理项。
+
+
+**编码示例**
+
+<CodeStep step={1}>示例1: </CodeStep> 字符 ”😊“（U+1F60A） UTF-16 编码过程
+
+1. 确定字符Unicode码点
+  - 码点为U+1F60A
+  - 减去 `0x10000`:  0x1F60A - 0x10000 = 0xF60A
+2. 分解为高10位和低10位
+  - 高10位：(0x0F60A >> 10) & 0x3FF = 0x03C
+  - 低10位：0x0F60A &  0x3FF = 0x0AA
+3. 计算高代理项和低代理项：
+  - 高代理项：0xD800 + 0x03C = 0xD83D
+  - 低代理项：0xDC00 + 0x0AA = 0xDE0A
+4. UTF-16编码结果
+  - 代理对： `0xD83D 0xDE0A`
+
+<Pitfall>
+  1. `0xF60A >> 10` 意味着将码点 0xF60A 向右移动 10 位。在二进制操作中，右移 10 位相当于将最高的 10 位移除，剩下的低位。
+  对于码点 0xF60A，移位后得到的结果是 0x3D。
+  2. `& 0x3FF` 是为了确保结果不超过 10 位二进制数的范围, 在二进制操作中，& 0x3FF 是为了保留最低的 10 位。
+</Pitfall>
+
+
+**使用JavaScript进行UTF-16编码**
+
+```js
+function utf16Encode(codePoint) {
+  if (codePoint <= 0xFFFF) {
+    // Basic Multilingual Plane (BMP) character
+    return String.fromCharCode(codePoint);
+  } else {
+    // Supplementary Plane character (U+10000 - U+10FFFF)
+    codePoint -= 0x10000;
+    let highSurrogate = 0xD800 + (codePoint >> 10);
+    let lowSurrogate = 0xDC00 + (codePoint & 0x3FF);
+    return String.fromCharCode(highSurrogate, lowSurrogate);
+  }
+}
+
+```
+
+### UTF-32
+
+
+### 差异以及对比
+
+## Unicode 常用工具
+
+## Unicode 标准
+
+## Unicode 的应用
+
+## Reference
