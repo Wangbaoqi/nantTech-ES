@@ -104,7 +104,7 @@ export const siteConfigNav: TypeSiteConfigNavItem[] = [
   {
     title: 'Type Grammar',
     activeLink: 'typeGrammar',
-    link: '/docs/typeGrammar/languageType',
+    link: '/docs/typeGrammar/dataType/languageType',
     label: 'DataType'
   },
   {

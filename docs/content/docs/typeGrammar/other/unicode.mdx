@@ -3,8 +3,9 @@ title: Unicode OverView
 excerpt: Unicode OverView
 date: 2023-01-23
 type: Docs
-category: TypeConversion
-tags: typeConversion
+subType: blog
+category: DataType
+tags: DataType
 ---
 
 ## Foundation
@@ -38,16 +39,26 @@ tags: typeConversion
 - 中文汉字（CJK Unified Ideographs）：包括中文、日文、韩文的常用汉字。例如：你, 好, 日本, 韓國
 - 其他语自然语言等。。。
 
-### 码点
+### 码点（Code Point）
 
 **编码字符集**是一组字符，每个字符都被分配了唯一的数字。编码字符集的单位称为码点。码位值表示字符在编码字符集中的位置。
 
-**码点**是 Unicode 字符集中每个字符的**唯一标识**，通常表示为 **U+XXXX** 的形式，其中 **XXXX** 是[十六进制](/docs/typeGrammar/other/terms#十六进制hexadecimal)数字。
+**码点（码位）**是 Unicode 字符集中每个字符的**唯一标识**，通常表示为 **U+XXXX** 的形式，其中 **XXXX** 是[十六进制](/docs/typeGrammar/other/terms#十六进制hexadecimal)数字。
 
 **码点范围**从 U+0000 到 U+10FFFF，其中：
 - U+0000 到 U+007F：ASCII 字符集，包含基本的英文字母、数字和控制字符。
 - U+0080 到 U+FFFF：包含各种语言的字符和符号，涵盖拉丁字母扩展、希腊字母、汉字等。
 - U+10000 到 U+10FFFF：称为辅助平面，包含较少使用的字符和符号，如历史文字、表情符号等。
+
+### 码元（Code Unit）
+
+码元是编码字符数据所用的基本单元。不同的编码方式使用不同大小的码元。例如：
+
+- UTF-16 使用一个或两个 16 位的码元表示一个字符。
+- UTF-8 使用一个到四个 8 位的码元表示一个字符。
+- UTF-32 使用一个 32 位的码元表示一个字符。
+
+
 
 ### 编码范围
 
@@ -60,6 +71,8 @@ tags: typeConversion
 - 字符备用区 (PUA)：从 U+F0000 到 U+10FFFF，供用户自定义字符。
 
 ![unicodeplanes](https://media.wangbaoqi.tech/assets/unicode/unicodeplanes.png)
+
+[更详细的Unicode字符平面映射](https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84)
 
 ## Unicode 编码方式
 
@@ -272,20 +285,7 @@ UTF-32 通常用于内存空间不是问题且需要高效随机访问字符的�
 除此之外，[onlinetools](https://onlinetools.com/unicode) 包含了多种的关于Unicode的工具。
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-## Unicode 标准
-
-## Unicode 的应用
-
 ## Reference
+
+- [Unicode](https://home.unicode.org/)
+- [Unicode Specification](https://www.unicode.org/versions/Unicode15.1.0/)

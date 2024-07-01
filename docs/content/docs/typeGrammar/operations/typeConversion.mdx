@@ -44,11 +44,8 @@ tags: TypeConversion
 
 ## ToObject
 
+抽象操作符`ToObject`接收参数(**ECMAScript language value**)并且返回一个*normal completion*或者*throw completion*
 
-<Note>
-  抽象操作符*ToObject*接收参数(ECMAScript language value)并且返回一个*
-  normal completion*或者*throw completion*
-</Note>
 
 转化表如下：
 
@@ -76,3 +73,43 @@ export default function toObject(it: any) {
 ```
 
 
+## ToUint16
+
+抽象操作符`ToUint16`接收*argument*(**ECMAScript language value**)并且返回一个包含**整数**的*normal completion*或者*throw completion*
+
+它将参数`argument`转换为`+0`到 2<sup>16</sup> - 1 包含区间中的2<sup>16</sup>个整数值之一。
+
+<Blockquote>
+  执行步骤：
+  1. Let number be ? [ToNumber(argument)](#tonumber).
+  2. If number is not finite or number is either $$ +0_{𝔽}$$  or $$ -0_{𝔽}$$, return $$ +0_{𝔽}$$.
+  3. Let int be truncate($$ \Reals(number) $$ ).
+  4. Let int16bit be int modulo 2<sup>16</sup>.
+  5. Return  𝔽(int16bit).
+</Blockquote>
+
+代码实现
+
+```ts
+export const ToUint16 = (it: LanguageType) => {
+  const number = Number(it); // actual ToNumber
+  if(!isFinite(number) || isNaN(number) || number === 0) {
+    return 0;
+  }
+  const int = Math.abs(number);
+  const int16bit = int % 2**16;
+  return Math.floor(int16bit)
+}
+```
+
+
+
+
+
+
+## Conversion Symbols
+
+- 𝔽(x): 数学值或者扩展的数学值`x`到Number值的转换。
+- ℤ(x): 整数`x`到 `BigInt`的转换。
+- ℝ(x): Number或者BigInt值 `x`到数学值的转换。
+- truncate(x): 通过向零舍入来移除x的小数部分，如果`x<0`，则产生`-floor（-x）`，否则产生`floor（x）`。

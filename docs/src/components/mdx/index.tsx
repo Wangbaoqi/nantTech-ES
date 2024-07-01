@@ -73,6 +73,10 @@ const Strong = (p: JSX.IntrinsicElements['strong']) => (
   <strong className='font-bold text-inherit' {...p} />
 );
 
+const ErrorStrong = (p: JSX.IntrinsicElements['strong']) => (
+  <strong className='font-bold text-inherit text-red-400' {...p} />
+);
+
 const Pre = (p: JSX.IntrinsicElements['pre']) => (
   <pre className='-mx-6 my-4' {...p} />
 );
@@ -191,17 +195,11 @@ const Code = ({
           },
           className
         ),
-        pre: 'font-light w-full text-sm',
+        pre: 'font-light w-full text-sm font-wotfard',
         copyButton: 'text-lg text-zinc-500 mr-2'
       }}
       codeString={codeString}
-      onCopy={() => {
-        // trackEvent("MDXComponents - Copy", {
-        //   category: "docs",
-        //   action: "copyCode",
-        //   data: codeString,
-        // });
-      }}
+      onCopy={() => {}}
     >
       <CodeBlock
         codeString={codeString}
@@ -264,6 +262,7 @@ export const MDXComponents = {
   img: Image,
   a: Link,
   Strong,
+  ErrorStrong,
   Note,
   Wip,
   Pitfall,

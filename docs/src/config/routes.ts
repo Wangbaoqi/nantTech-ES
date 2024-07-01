@@ -1,6 +1,10 @@
 import { IconNotepadDash, IconReact, IconComponent } from '@/components/icons/';
 
 import {
+  Ratio,
+  Proportions,
+  PencilRuler,
+  PresentationIcon,
   Castle as IconOverview,
   Glasses as IconGlasses,
   DatabaseBackup,
@@ -25,44 +29,44 @@ export type sourceRoutesItemType = {
 const typeGrammar = [
   {
     name: 'Data Type',
-    path: '/docs/typeGrammar',
-    icon: IconOverview,
+    path: '/docs/typeGrammar/dataType',
+    icon: Ratio,
     collapsed: false,
     items: [
       {
         name: 'Language Type',
-        path: '/docs/typeGrammar/languageType'
+        path: '/docs/typeGrammar/dataType/languageType'
       },
       {
         name: 'Specification Type',
-        path: '/docs/typeGrammar/specificationType'
+        path: '/docs/typeGrammar/dataType/specificationType'
       },
       {
         name: 'Number Type',
-        path: '/docs/typeGrammar/number'
+        path: '/docs/typeGrammar/dataType/number'
       }
     ]
   },
   {
     name: 'Abstract Operations',
-    path: '/docs/typeGrammar/abstract',
-    icon: DatabaseBackup,
+    path: '/docs/typeGrammar/operations',
+    icon: Proportions,
     collapsed: false,
     items: [
       {
         name: 'Type Conversion',
-        path: '/docs/typeGrammar/typeConversion'
+        path: '/docs/typeGrammar/operations/typeConversion'
       },
       {
         name: 'Comparison Operation',
-        path: '/docs/typeGrammar/comparisonOperation'
+        path: '/docs/typeGrammar/operations/comparisonOperation'
       }
     ]
   },
   {
     name: 'Grammar',
     path: '/docs/typeGrammar/grammar',
-    icon: DatabaseBackup,
+    icon: PencilRuler,
     collapsed: false,
     items: [
       {
@@ -82,7 +86,7 @@ const typeGrammar = [
   {
     name: 'Other Standards',
     path: '/docs/typeGrammar/other',
-    icon: DatabaseBackup,
+    icon: PresentationIcon,
     collapsed: false,
     items: [
       {

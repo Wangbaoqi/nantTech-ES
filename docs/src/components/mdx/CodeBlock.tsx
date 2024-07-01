@@ -61,7 +61,7 @@ const Codeblock = forwardRef<HTMLPreElement, CodeblockProps>(
   ) => {
     const theme = themeProp || defaultTheme;
     const shouldHighlightLine = calculateLinesToHighlight(metaString);
-    const isMultiLine = codeString.split('\n').length > 2;
+    const isMultiLine = codeString.split('\n').length >= 2;
 
     const lastSelectionText = React.useRef<string | null>(null);
 
