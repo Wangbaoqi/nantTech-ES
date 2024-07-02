@@ -42,6 +42,35 @@ tags: TypeConversion
 
 ## ToString
 
+抽象操作符`ToString`接收*argument*(**ECMAScript language value**)并且返回一个包含字符串的*normal completion*或者*throw completion*。
+
+<Blockquote>
+  执行步骤：
+  1. *argument* is String return argument
+  2. *argument* is Symbol throw a TypeError exception
+  3. *argument* is **undefined**, return 'undefined'
+  4. *argument* is **null**, return 'null'
+  5. *argument* is **true**, return 'true'
+  6. *argument* is **false**, return 'false'
+  7. *argument* is [Number](/docs/typeGrammar/dataType/number), return [Number:toString](/docs/typeGrammar/dataType/number#tostring)
+  8. *argument* is BigInt, return BigInt:toString
+  9. Assert: *argument* is an Object
+  10. Let *PrimValue* be ? ToPrimitive(argument, STRING)
+  11. Assert: *PrimValue* is not an Object
+  12. Return ? ToString(PrimValue)
+</Blockquote>
+
+实现如下，[源码](https://github.com/Wangbaoqi/ESPolyfill/blob/main/packages/nant-es-core/internals/to-string.ts)
+
+```ts
+export default function toString(it: any) {
+  if(classof(it) === 'Symbol') throw new TypeError('Cannot convert a Symbol value to a string')
+  return String(requireObjectCoercible(it))
+}
+```
+
+
+
 ## ToObject
 
 抽象操作符`ToObject`接收参数(**ECMAScript language value**)并且返回一个*normal completion*或者*throw completion*

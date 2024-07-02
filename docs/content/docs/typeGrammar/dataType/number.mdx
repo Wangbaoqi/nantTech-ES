@@ -403,3 +403,20 @@ export function sameValueZero(x: number, y: number): boolean {
   return x === y || (x !== x && y !== y)
 }
 ```
+
+## toString
+
+抽象操作 **Number::toString** 接收参数`x`(Number) 和 `radix`(2到36之间的整数，也就是进制)，并且
+返回一个**String**。
+
+它将`x`转换为基数为`radix`的字符串表示形式，如下例子：
+
+```ts
+(100).toString(2); // 将十进制100转换为二进制 1100100
+(Infinity).toString(2); // Infinity
+(NaN).toString(2); // NaN
+(0).toString(2); // 0
+```
+
+规范实现步骤请看[这里](https://tc39.es/ecma262/#sec-numeric-types-number-tostring)，进制
+之间的转换请看[这里](/docs/typeGrammar/other/terms#computer-numbers)

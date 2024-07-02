@@ -208,6 +208,85 @@ let rawString = String.raw`^\d{3}\-\d{2}\-\d{4}$`; // ^\d{3}\-\d{2}\-\d{4}$
 let rawString = String.raw`C:\Users\Alice\Documents\file.txt`; // C:\Users\Alice\Documents\file.txt
 ```
 
+## Properties of prototype
+
+### at
+
+`at(index)`方法接受一个整数值，并返回一个新的 String，该字符串由位于指定偏移量处的单个 UTF-16 码元组成。
+该方法允许正整数和负整数。负整数从字符串中的最后一个字符开始倒数。如果没有找到，则返回`undefined`。
+
+```ts
+const str = 'baoqi'
+str.at(0); // b
+str.at(1); // a
+str.at(-1); // i
+str.at(-2); // q
+str.at(6); // undefined
+```
+
+规范实现[步骤](https://tc39.es/ecma262/#sec-string.prototype.at)。
+
+### charAt
+
+`charAt(pos)`**方法一个由给定的索引处的单个[UTF-16码元](/docs/typeGrammar/other/unicode#%E7%A0%81%E5%85%83code-unit)构成的新字符串**。
+
+<Note>
+  `charAt`方法总是将字符串作为UTF-16码元序列进行索引。
+
+  因为Unicode码位的范围从 `0` 到 `1114111` (0x10FFFF)。`charAt()` 方法总是返回一个其值小于65536（0xFFFF）的字符。
+
+  如果获取值大于 65535 的完整字符，需要检索不仅是 `charAt(i)`，还要检索 `charAt(i + 1)`（就像操作一个由两个字符组成的字符串一样），
+  或者使用[codePointAt](#codePointAt)、[fromCodePoint](#fromCodePoint) 代替。
+
+  如果*pos*是一个整数，那么`x.charAt(pos)`的结果等同于`x.substring(pos，pos+1)`的结果。
+</Note>
+
+<CodeStep step={1}>示例1: </CodeStep> 在0xFFFF范围之内的字符，UTF-16码元序列只有一个，因此这种结果是没有问题的
+
+0xFFFF之内的字符有很多种，详细请到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E5%9F%BA%E6%9C%AC%E5%A4%9A%E6%96%87%E7%A7%8D%E5%B9%B3%E9%9D%A2)
+
+```ts
+// 1. 基本拉丁文 码点范围 0000至007F
+const str = 'my name is nate';
+str.charAt(); // m
+str.charAt(0); // m
+str.charAt(1); // y
+str.charAt(100); // ''
+
+// 2. '☎' 码点 U+260E
+const str1 = '☎';
+str1.charAt(0); // '☎'
+```
+
+<CodeStep step={1}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有多个，因此这种结果是需要找到每一个码元
+
+这种字符一般都是在**第一到第十六辅助平面之内**，详细到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E7%AC%AC%E4%B8%80%E8%BC%94%E5%8A%A9%E5%B9%B3%E9%9D%A2)
+
+```ts
+// 1. 𠀗𠀖
+const str = '𠀗𠀖'
+str.charAt(0); // '\uD840'
+str.charAt(1); // '\uDC17'
+str.charAt(2); // '\uD840'
+str.charAt(3); // '\uDC16'
+str.charAt(4); // ''
+str.charAt(5); // ''
+str.charAt(6); // ''
+```
+
+接下来验证一下，字符`𠀗`的码点U+20017，根据[UTF-16编码]((/docs/typeGrammar/other/unicode#utf-16))之后的码元序列为`0xD840 0xDC17`。
+因此当执行`charAt(0)`会得到`0xD840`码元，以此类推，后面会得到剩余的码元，直到为空。
+
+<WarningStrong>At方法也存在这种0xFFFF范围之外的问题，结果跟charAt方法一致。</WarningStrong>
+
+**At和charAt之间比较明显的区别是通过索引来获取或者截取字符，尤其是从字符结尾开始的场景。**
+
+### charCodeAt
+
+
+### codePointAt
+
+
 
 ## 字符串转换
 ## 模板字符串

@@ -77,6 +77,10 @@ const ErrorStrong = (p: JSX.IntrinsicElements['strong']) => (
   <strong className='font-bold text-inherit text-red-400' {...p} />
 );
 
+const WarningStrong = (p: JSX.IntrinsicElements['strong']) => (
+  <strong className='font-bold text-inherit text-yellow-400' {...p} />
+);
+
 const Pre = (p: JSX.IntrinsicElements['pre']) => (
   <pre className='-mx-6 my-4' {...p} />
 );
@@ -263,6 +267,7 @@ export const MDXComponents = {
   a: Link,
   Strong,
   ErrorStrong,
+  WarningStrong,
   Note,
   Wip,
   Pitfall,
