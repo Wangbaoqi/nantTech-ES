@@ -281,12 +281,54 @@ str.charAt(6); // ''
 
 **At和charAt之间比较明显的区别是通过索引来获取或者截取字符，尤其是从字符结尾开始的场景。**
 
+
 ### charCodeAt
+
 
 
 ### codePointAt
 
+`codePointAt(index)`方法返回一个非负整数，该整数是从给定索引开始的字符的**Unicode码点值(十进制)**。
+**请注意，索引仍然基于UTF-16代码单元，而不是Unicode代码点。**
 
+1. 参数`index`：从零开始（`undefined`被转换为0）
+2. 返回值：一个非负整数，该整数是从给定索引开始的字符的**Unicode码点值(十进制)。
+  - 如果索引超出范围，即`0 - str.lenght - 1`，返回`undefined`。
+  - 如果索引指向的元素是UTF-16高位代理项，**则返回代理对的码点值**。
+  - 如果索引指向的元素是UTF-16低位代理项，**则仅仅返回低位代理项的码点值**。
+
+<CodeStep step={1}>示例1: </CodeStep> 在0xFFFF范围之内的字符，UTF-16码元序列只有一个，这种是不会有代理对的
+
+```ts
+name'.codePointAt(0);
+'name'.codePointAt(1);
+'name'.codePointAt(2);
+'name'.codePointAt(3);
+'name'.codePointAt(4);
+```
+
+<CodeStep step={1}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有两个，这种是存在代理对的，索引`0`会得到整个码点。
+
+```ts
+'😁'.codePointAt(0).toString(16); // 0x1f601
+'😁'.codePointAt(1).toString(16); // 0xde01 只会得到对应索引代理项的码点
+```
+
+<CodeStep step={1}>示例3: </CodeStep> 如果给出字符的转义序列，返回其Unicode码点值
+
+```ts
+// 🐎👱❤
+const str = "\ud83d\udc0e\ud83d\udc71\u2764";
+
+// 1. 如果使用for循环，则同一个Unicode码点会被访问两次（因为一个码点可能是代理对），得到的结果是不对的
+// 2. 代替的方案，使用for-of循环或者...str，两者都调用了`@@iterator`方法, 使用codePointAt（0）获取每个元素的代码点。
+
+for (const char of str) {
+  console.log(char.codePointAt(0));
+}
+
+[...str].map(char => char.codePointAt(0));
+```
 
 ## 字符串转换
 ## 模板字符串
