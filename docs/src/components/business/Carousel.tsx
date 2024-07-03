@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import { ChevronRightLinearIcon } from '@/components/icons';
 import { useResizeObserver } from '@/hooks/useResizeObserve';
 interface CarouselProps {

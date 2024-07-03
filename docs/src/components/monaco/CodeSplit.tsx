@@ -1,6 +1,6 @@
 'use client';
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import { CodeEditor } from './CodeEditor';
 import {
   type SandpackFile,

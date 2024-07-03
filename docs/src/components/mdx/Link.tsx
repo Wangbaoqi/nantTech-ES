@@ -1,5 +1,5 @@
 import { ExternalLink } from '../ExternalLink';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 
 import InnerLink from 'next/link';
 import * as Components from '@nextui-org/react';

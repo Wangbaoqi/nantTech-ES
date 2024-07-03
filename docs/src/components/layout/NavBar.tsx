@@ -1,6 +1,6 @@
 'use client';
 import NextLink from 'next/link';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import {
   link,
   Link,

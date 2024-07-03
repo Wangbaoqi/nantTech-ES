@@ -1,4 +1,4 @@
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import { Chip } from '@nextui-org/react';
 
 import { COLORS_BY_DIFFICULTY } from '@/config/site';

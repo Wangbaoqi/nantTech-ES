@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { MoonFilledIcon, SunFilledIcon } from '@/components/icons';
 import { useSwitch, SwitchProps } from '@nextui-org/react';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import { useIsSSR } from '@react-aria/ssr';
 
 export function ThemeSwitcher(props: SwitchProps) {

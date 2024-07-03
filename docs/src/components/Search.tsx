@@ -4,7 +4,7 @@ import { Button, Kbd, link } from '@nextui-org/react';
 import { SearchLinearIcon } from '@/components/icons';
 import { useEffect, useState } from 'react';
 import { isAppleDevice } from '@react-aria/utils';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 
 interface SearchProps {
   className?: string;

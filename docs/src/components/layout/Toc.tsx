@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import { Heading } from '@/lib/docs/utils';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 

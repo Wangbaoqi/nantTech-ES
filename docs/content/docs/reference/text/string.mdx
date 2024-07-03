@@ -7,25 +7,28 @@ category: Reference
 tags: string
 ---
 
-
 String Objects 主要用于表示和操作**字符序列**。
-
 
 ## Create String
 
 创建字符串主要有以下方式：
 
 1. 字面量方式
+
 ```js
-const str = 'hi'
+const str = 'hi';
 ```
+
 2. 通过`String()`构造函数来创建
+
 ```js
-const strObj = new String('hi')
+const strObj = new String('hi');
 ```
+
 3. 不使用`new`调用构造函数创建
+
 ```js
-const str1 = String('hi')
+const str1 = String('hi');
 ```
 
 这几种方式可以归纳为**字符串原始值**和**字符串对象**两种方式。
@@ -35,21 +38,15 @@ const str1 = String('hi')
 
 <Note>
   在调用原始字符串的方法或者进行属性查找的上下文中，JavaScript会自动包装原始字符串并在包装原始字符串对象上
-  调用方式或者属性查找
-  ```js
-  typeof str; // string
-  typeof strObj // object
-  typeof str1; // string
-  ```
+  调用方式或者属性查找 ```js typeof str; // string typeof strObj // object
+  typeof str1; // string ```
 </Note>
 
 <Pitfall>
   注意，在使用`eval`时，原始值和对象会表现不同的效果。
-  ```js
-  const str = '2 + 2';
-  const strObj = new String('2 + 2');
-  eval(str); // 4
-  eval(strObj); // String{'2 + 2'}
+  ```js const str = '2 +
+  2'; const strObj = new String('2 + 2'); eval(str); // 4 eval(strObj); //
+  String{'2 + 2'}
   ```
 </Pitfall>
 
@@ -61,45 +58,39 @@ strObj.valueOf(); // '2 + 2'
 
 ## 字符串比较
 
-字符串的比较是基于字符串中字符的[Unicode编码值](/docs/typeGrammar/other/unicode#码点)来决定顺序的。
+字符串的比较是基于字符串中字符的[Unicode 编码值](/docs/typeGrammar/other/unicode#码点)来决定顺序的。
 主要有以下几种方式：
+
 - 比较运算符
 - 逐字比较
-- 大小写比较：Unicode码点（大小写不同）
+- 大小写比较：Unicode 码点（大小写不同）
 - 语言环境比较： `localeCompare()`
-
-
 
 ## Constructor
 
 `String()` 构造函数创建字符串对象，当作为函数调用时，作为字符串原始值并且进行类型转换。
 
 <Blockquote>
-`String(value)`调用时执行的步骤：
-  - If value is not present, then
-    - Let s be the empty String.
-  - else
-    - If NewTarget is undefined and value is a Symbol, return `SymbolDescriptiveString(value)`.
-    - Let s be ? [ToString(value)](/docs/typeGrammar/operations/typeConversion#tostring).
-  - If NewTarget is undefined, return s.
-  - Return StringCreate(s, ? `GetPrototypeFromConstructor(NewTarget, "%String.prototype%"))`.
+  `String(value)`调用时执行的步骤： - If value is not present, then - Let s be
+  the empty String. - else - If NewTarget is undefined and value is a Symbol,
+  return `SymbolDescriptiveString(value)`. - Let s be ?
+  [ToString(value)](/docs/typeGrammar/operations/typeConversion#tostring). - If
+  NewTarget is undefined, return s. - Return StringCreate(s, ?
+  `GetPrototypeFromConstructor(NewTarget, "%String.prototype%"))`.
 </Blockquote>
 
 需要注意的是否是函数调用还是构造函数，其次是`value`的值类型，这里具体要看`ToString`的内部实现方式。
-还有`String(Symbol('s'))`是**唯一一种将Symbol转换为String不抛出异常的转换方式**。
-
+还有`String(Symbol('s'))`是**唯一一种将 Symbol 转换为 String 不抛出异常的转换方式**。
 
 ## Static Methods
 
 ### fromCharCode
 
-**`String.fromCharCode(...codeUnits)`静态方法返回由指定的UTF-16码元序列创建的字符串。**
+**`String.fromCharCode(...codeUnits)`静态方法返回由指定的 UTF-16 码元序列创建的字符串。**
 
-1. 参数`codeUnits`：一个介于`0`到`65535`(2<sup>16</sup>-1)之间的数字（十进制），表示一个UTF-16码元序列创建的字符串。
-如果大于BMP（0xFFFF）的数字会被截断为最后的16位，不进行有效的检查。
-2. 返回值：一个长度为`N`的字符串，由`N`个指定的UTF-16码元组成。
-
-
+1. 参数`codeUnits`：一个介于`0`到`65535`(2<sup>16</sup>-1)之间的数字（十进制），表示一个 UTF-16 码元序列创建的字符串。
+   如果大于 BMP（0xFFFF）的数字会被截断为最后的 16 位，不进行有效的检查。
+2. 返回值：一个长度为`N`的字符串，由`N`个指定的 UTF-16 码元组成。
 
 **使用**
 
@@ -111,19 +102,22 @@ const charB = String.fromCharCode(6554); // ᦚ
 ```
 
 2. 处理字符编码
-当你从某个数据流或二进制文件中读取字符编码值，并需要将其转换为可读字符时：
+   当你从某个数据流或二进制文件中读取字符编码值，并需要将其转换为可读字符时：
 
 ```js
 const byteArray = [72, 101, 108, 108, 111];
-const readString = byteArray.reduce((prev, cur) => prev + String.fromCharCode(cur), ''); // Hello
+const readString = byteArray.reduce(
+  (prev, cur) => prev + String.fromCharCode(cur),
+  ''
+); // Hello
 ```
 
 3. 构建字符序列
-可以用于生成一系列字符，例如字母表或特殊符号序列：
+   可以用于生成一系列字符，例如字母表或特殊符号序列：
 
 ```js
-let strLetter = ''
-for(let i = 65; i < 90; i++) {
+let strLetter = '';
+for (let i = 65; i < 90; i++) {
   strLetter += String.fromCharCode(i);
 }
 // 'ABCDEFGHIJKLMNOPQRSTUVWXY'
@@ -144,8 +138,8 @@ console.log(combined);
 5. 处理国际化字符
 
 ```js
-const smiley = String.fromCharCode(0x263A); //输出: "☺"
-const smiley = String.fromCharCode(0x101C); //输出: 'လ'
+const smiley = String.fromCharCode(0x263a); //输出: "☺"
+const smiley = String.fromCharCode(0x101c); //输出: 'လ'
 ```
 
 ### fromCodePoint
@@ -154,9 +148,9 @@ const smiley = String.fromCharCode(0x101C); //输出: 'လ'
 
 1. 参数`codePoints`：一个介于 0 和 0x10FFFF（包括两者）之间的整数，表示一个 Unicode 码位。
 2. 返回值：通过使用指定的码位序列创建的字符串。
-3. 异常：如果不在范围之内，怎会抛出RangeError的异常。
+3. 异常：如果不在范围之内，怎会抛出 RangeError 的异常。
 
-**与fromCharCode的比较**
+**与 fromCharCode 的比较**
 
 - 支持的码位范围
   - `String.fromCharCode` 仅支持 BMP 内的码位（0x0000 到 0xFFFF）。
@@ -170,17 +164,17 @@ const smiley = String.fromCharCode(0x101C); //输出: 'လ'
   - `String.fromCodePoint` 可以直接生成超出 BMP 的字符，无需额外处理。
     ```js
     // 比如 码位 U+1F303
-    String.fromCodePoint(0x1F303); // 码位 U+1F303（夜晚与星星）'🌃'
+    String.fromCodePoint(0x1f303); // 码位 U+1F303（夜晚与星星）'🌃'
     ```
 - 易用性和安全性
   - `String.fromCodePoint` 更易用，特别是在处理包括表情符号和其他超出 BMP 的字符时，更加可靠和方便。
-
 
 ### raw
 
 String.raw() 静态方法是模板字符串的标签函数。它用于获取模板字符串的原始字符串形式——即，替换表达式（例如 `${foo}`）会被替换处理，但转义序列（例如 \n）不会被处理。
 
 主要有以下几种用途：
+
 - 原样输出：String.raw 会按字面值输出模板字符串中的内容，不对转义字符进行解释或转换。
 - 多行字符串：可以用于多行字符串处理。
 - 处理特殊字符：尤其适合处理包含反斜杠或其他转义字符的字符串
@@ -188,21 +182,28 @@ String.raw() 静态方法是模板字符串的标签函数。它用于获取模�
 **使用示例**
 
 1. 简单模板字符串
+
 ```js
 // \n 不会被解释为换行符，而是按字面值输出。
 let rawString = String.raw`Hello\nWorld`; // Hello\nWorld
 ```
+
 2. 多行字符串
+
 ```js
 // \n 不会被解释为换行符，而是按字面值输出。
 let rawString = String.raw`First line\nSecond line\nThird line`; // Hello\nWorld
 ```
+
 3. 生成正则表达式-在构建包含大量反斜杠的正则表达式时非常有用。
+
 ```js
 // \n 不会被解释为换行符，而是按字面值输出。
 let rawString = String.raw`^\d{3}\-\d{2}\-\d{4}$`; // ^\d{3}\-\d{2}\-\d{4}$
 ```
+
 4. 生成文件路径：处理文件路径时，可以避免反斜杠被解释为转义字符。
+
 ```js
 // \n 不会被解释为换行符，而是按字面值输出。
 let rawString = String.raw`C:\Users\Alice\Documents\file.txt`; // C:\Users\Alice\Documents\file.txt
@@ -216,7 +217,7 @@ let rawString = String.raw`C:\Users\Alice\Documents\file.txt`; // C:\Users\Alice
 该方法允许正整数和负整数。负整数从字符串中的最后一个字符开始倒数。如果没有找到，则返回`undefined`。
 
 ```ts
-const str = 'baoqi'
+const str = 'baoqi';
 str.at(0); // b
 str.at(1); // a
 str.at(-1); // i
@@ -228,22 +229,23 @@ str.at(6); // undefined
 
 ### charAt
 
-`charAt(pos)`**方法一个由给定的索引处的单个[UTF-16码元](/docs/typeGrammar/other/unicode#%E7%A0%81%E5%85%83code-unit)构成的新字符串**。
+`charAt(pos)`**方法一个由给定的索引处的单个[UTF-16 码元](/docs/typeGrammar/other/unicode#%E7%A0%81%E5%85%83code-unit)构成的新字符串**。
 
 <Note>
   `charAt`方法总是将字符串作为UTF-16码元序列进行索引。
 
-  因为Unicode码位的范围从 `0` 到 `1114111` (0x10FFFF)。`charAt()` 方法总是返回一个其值小于65536（0xFFFF）的字符。
+因为 Unicode 码位的范围从 `0` 到 `1114111` (0x10FFFF)。`charAt()` 方法总是返回一个其值小于 65536（0xFFFF）的字符。
 
-  如果获取值大于 65535 的完整字符，需要检索不仅是 `charAt(i)`，还要检索 `charAt(i + 1)`（就像操作一个由两个字符组成的字符串一样），
-  或者使用[codePointAt](#codePointAt)、[fromCodePoint](#fromCodePoint) 代替。
+如果获取值大于 65535 的完整字符，需要检索不仅是 `charAt(i)`，还要检索 `charAt(i + 1)`（就像操作一个由两个字符组成的字符串一样），
+或者使用[codePointAt](#codePointAt)、[fromCodePoint](#fromCodePoint) 代替。
 
-  如果*pos*是一个整数，那么`x.charAt(pos)`的结果等同于`x.substring(pos，pos+1)`的结果。
+如果*pos*是一个整数，那么`x.charAt(pos)`的结果等同于`x.substring(pos，pos+1)`的结果。
+
 </Note>
 
 <CodeStep step={1}>示例1: </CodeStep> 在0xFFFF范围之内的字符，UTF-16码元序列只有一个，因此这种结果是没有问题的
 
-0xFFFF之内的字符有很多种，详细请到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E5%9F%BA%E6%9C%AC%E5%A4%9A%E6%96%87%E7%A7%8D%E5%B9%B3%E9%9D%A2)
+0xFFFF 之内的字符有很多种，详细请到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E5%9F%BA%E6%9C%AC%E5%A4%9A%E6%96%87%E7%A7%8D%E5%B9%B3%E9%9D%A2)
 
 ```ts
 // 1. 基本拉丁文 码点范围 0000至007F
@@ -258,13 +260,13 @@ const str1 = '☎';
 str1.charAt(0); // '☎'
 ```
 
-<CodeStep step={1}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有多个，因此这种结果是需要找到每一个码元
+<CodeStep step={2}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有多个，因此这种结果是需要找到每一个码元
 
 这种字符一般都是在**第一到第十六辅助平面之内**，详细到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E7%AC%AC%E4%B8%80%E8%BC%94%E5%8A%A9%E5%B9%B3%E9%9D%A2)
 
 ```ts
 // 1. 𠀗𠀖
-const str = '𠀗𠀖'
+const str = '𠀗𠀖';
 str.charAt(0); // '\uD840'
 str.charAt(1); // '\uDC17'
 str.charAt(2); // '\uD840'
@@ -274,51 +276,84 @@ str.charAt(5); // ''
 str.charAt(6); // ''
 ```
 
-接下来验证一下，字符`𠀗`的码点U+20017，根据[UTF-16编码]((/docs/typeGrammar/other/unicode#utf-16))之后的码元序列为`0xD840 0xDC17`。
+接下来验证一下，字符`𠀗`的码点 U+20017，根据[UTF-16 编码](<(/docs/typeGrammar/other/unicode#utf-16)>)之后的码元序列为`0xD840 0xDC17`。
 因此当执行`charAt(0)`会得到`0xD840`码元，以此类推，后面会得到剩余的码元，直到为空。
 
-<WarningStrong>At方法也存在这种0xFFFF范围之外的问题，结果跟charAt方法一致。</WarningStrong>
+<WarningStrong>
+  At方法也存在这种0xFFFF范围之外的问题，结果跟charAt方法一致。
+</WarningStrong>
 
-**At和charAt之间比较明显的区别是通过索引来获取或者截取字符，尤其是从字符结尾开始的场景。**
-
+**At 和 charAt 之间比较明显的区别是通过索引来获取或者截取字符，尤其是从字符结尾开始的场景。**
 
 ### charCodeAt
 
+`charCodeAt(pos)` 方法返回一个整数，**表示给定索引处的 UTF-16 码元**，其值介于 `0` 和 `65535` 之间，也就是 BMP 平面内。
 
+对于超出 BMP 平面的字符，则需要按照索引分别返回**高低代理项**的 UTF-16 的码元值。
 
-### codePointAt
+1. 参数*pos*：要返回字符的索引，从零开始（`undefined`被转换为 0）
+2. 返回值：一个整数，介于 0-65535。
 
-`codePointAt(index)`方法返回一个非负整数，该整数是从给定索引开始的字符的**Unicode码点值(十进制)**。
-**请注意，索引仍然基于UTF-16代码单元，而不是Unicode代码点。**
-
-1. 参数`index`：从零开始（`undefined`被转换为0）
-2. 返回值：一个非负整数，该整数是从给定索引开始的字符的**Unicode码点值(十进制)。
-  - 如果索引超出范围，即`0 - str.lenght - 1`，返回`undefined`。
-  - 如果索引指向的元素是UTF-16高位代理项，**则返回代理对的码点值**。
-  - 如果索引指向的元素是UTF-16低位代理项，**则仅仅返回低位代理项的码点值**。
+- 超出 65535 的字符，则会按照代理项返回对应码元
+- 索引*pos*不在字符长度范围之内，返回 NaN
 
 <CodeStep step={1}>示例1: </CodeStep> 在0xFFFF范围之内的字符，UTF-16码元序列只有一个，这种是不会有代理对的
 
 ```ts
-name'.codePointAt(0);
-'name'.codePointAt(1);
-'name'.codePointAt(2);
-'name'.codePointAt(3);
-'name'.codePointAt(4);
+'name'.charCodeAt(0); // 110 -> n
+'name'.charCodeAt(1); // 97
+'name'.charCodeAt(2); // 109
+'name'.charCodeAt(3); // 101
+'name'.charCodeAt(4); // NaN
+
+'你'.charCodeAt(0); // 20320
+'你'.charCodeAt(1); // NaN
 ```
 
-<CodeStep step={1}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有两个，这种是存在代理对的，索引`0`会得到整个码点。
+<CodeStep step={2}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有两个，这种是存在代理对的，索引`0`会得到对应的码点。
+
+```ts
+'𠀗'.charCodeAt(0); // 55360 - 高位代理项
+'𠀗'.charCodeAt(1); // 56343 - 低位代理项
+'𠀗'.charCodeAt(2); // NaN
+```
+
+\**如果想要一次得到 0xFFFF 范围之外的字符的 UTF，可以使用 *codePointAt\*方法。
+
+### codePointAt
+
+`codePointAt(index)`方法返回一个非负整数，该整数是从给定索引开始的字符的**Unicode 码点值(十进制)**。
+**请注意，索引仍然基于 UTF-16 代码单元，而不是 Unicode 代码点。**
+
+1. 参数*index*：从零开始（`undefined`被转换为 0）
+2. 返回值：一个非负整数，该整数是从给定索引开始的字符的\*\*Unicode 码点值(十进制)。
+
+- 如果索引超出范围，即`0 - str.lenght - 1`，返回`undefined`。
+- 如果索引指向的元素是 UTF-16 高位代理项，**则返回代理对的码点值**。
+- 如果索引指向的元素是 UTF-16 低位代理项，**则仅仅返回低位代理项的码点值**。
+
+<CodeStep step={1}>示例1: </CodeStep> 在0xFFFF范围之内的字符，UTF-16码元序列只有一个，这种是不会有代理对的
+
+```ts
+'name'.codePointAt(0); // 110 -> n
+'name'.codePointAt(1); // 97
+'name'.codePointAt(2); // 109
+'name'.codePointAt(3); // 101
+'name'.codePointAt(4); // undefined
+```
+
+<CodeStep step={2}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有两个，这种是存在代理对的，索引`0`会得到整个码点。
 
 ```ts
 '😁'.codePointAt(0).toString(16); // 0x1f601
 '😁'.codePointAt(1).toString(16); // 0xde01 只会得到对应索引代理项的码点
 ```
 
-<CodeStep step={1}>示例3: </CodeStep> 如果给出字符的转义序列，返回其Unicode码点值
+<CodeStep step={3}>示例3: </CodeStep> 如果给出字符的转义序列，返回其Unicode码点值
 
 ```ts
 // 🐎👱❤
-const str = "\ud83d\udc0e\ud83d\udc71\u2764";
+const str = '\ud83d\udc0e\ud83d\udc71\u2764';
 
 // 1. 如果使用for循环，则同一个Unicode码点会被访问两次（因为一个码点可能是代理对），得到的结果是不对的
 // 2. 代替的方案，使用for-of循环或者...str，两者都调用了`@@iterator`方法, 使用codePointAt（0）获取每个元素的代码点。
@@ -327,8 +362,143 @@ for (const char of str) {
   console.log(char.codePointAt(0));
 }
 
-[...str].map(char => char.codePointAt(0));
+[...str].map((char) => char.codePointAt(0));
 ```
 
+### 上述四种对比
+
+基于上述四种都是根据索引获取字符或者字符(UTF-16 码元或者 Unicode 码点)的方法，下表根据不同的特性来进行比较。
+
+|                  | at                          | charAt     | charCodeAt | codePointAt |
+| ---------------- | --------------------------- | ---------- | ---------- | ----------- |
+| **参数**          | *index* 整数                 | *pos* >= 0 |   *pos* >= 0   | *index*  整数 |
+| **返回值**        | 返回新的字符或者`undefined`    |  返回一个字符串（一个UTF-16码元）或者空字符串    |  返回一个介于0-65535之间的UTF-16码元值或者NaN    |  返回Unicode码点或者`undefined`
+| **BMP平面之内**    | 对应字符                     |   对应字符          |   对应索引码元值   | 对应Unicode码点值
+| **BMP平面之外**    | 代理对项（转义字符返回）        |   代理对项（转义字符返回）   |  代理对项（各自对应的码元值）    | 完整的Unicode码点值（索引0），索引1为低代理项Unicode码点值
+| **使用场景**      | 提取单个字符的情况（头尾） | 提取单个字符的情况     | BMP字符的UTF-16编码    | 整个 Unicode 字符集
+
+### concat
+
+`concat(...args)` 方法将字符串参数连接到调用的字符串，并返回一个新的字符串。
+
+1. 参数*args*: 一个或者多个字符串, 也有可能是其他类型的值
+2. 返回值： 组合的新的字符串
+
+<Note>
+  concat在组合新字符串时会将参数强制转换成字符串。内部会执行[ToString](/docs/typeGrammar/operations/typeConversion#tostring)或者[ToPrimary](/docs/typeGrammar/operations/typeConversion#toprimitive)
+</Note>
+
+```ts
+'a'.concat('b'); // ab
+'a'.concat('b', 1); // ab1
+```
+
+### endsWith
+
+`endsWith(searchString[, endPosition])`方法用于判断一个字符串是否以指定字符串结尾，如果是则返回 true，否则返回 false。
+
+- 参数
+  - *searchString*: 要搜索的字符串（正则会抛出异常，非正式正则被转换为字符串），参数如果是`undefined`，则会搜索`undefined`值。
+  - *endPosition*可选: 预期找到 *searchString*的末尾位置，默认是字符串长度
+- 返回值： `true`or`false`
+
+```ts
+'my name is nate'.endsWith('nate'); // true
+'my name is nate'.endsWith('nat', 15); // true
+```
+
+### includes
+
+`includes(searchString[, position])` 方法执行**区分大小写的搜索**，以确定是否可以在一个字符串中找到另一个字符串，并根据情况返回 `true` 或 `false`。
+
+- 参数
+ - *searchString*：要搜索的字符串（正则会抛出异常，非正式正则被转换为字符串），参数如果是`undefined`，则会搜索`undefined`值。
+ - *position*：开始的位置，默认是0。
+- 返回值：`true`or`false`
+
+```ts
+'my name is nate'.includes('nate'); // true
+'my name is nate'.includes('nat', 2); // true
+```
+
+### indexOf
+
+### lastIndexOf
+
+### isWellFormed
+
+`isWellFormed()` 方法返回一个表示该字符串是否包含**单独代理项**的布尔值。
+
+返回值：如果字符串不包含单独代理项，返回 true，否则返回 false。
+
+<Note>
+**应用场景: 避免`encodeURL`报错**
+
+如果传递的字符串格式不正确， `encodeURI` 会抛出错误。可以通过使用 `isWellFormed()` 在将字符串传递给 `encodeURI()` 之前测试字符串来避免这种情况。
+
+```ts
+const url = "https://example.com/search?q=\uD800";
+if(url.isWellFormed()) {
+  encodeURI(url);
+}
+```
+
+</Note>
+
+
+
+
+### localeCompare
+
+### match
+
+### matchAll
+
+### normalize
+
+### padEnd
+
+### padStart
+
+### repeat
+
+### replace
+
+### replaceAll
+
+### search
+
+### slice
+
+### split
+
+### startsWith
+
+### substring
+
+### toLocaleLowerCase
+
+### toLocaleUpperCase
+
+### toLowerCase
+
+### toUpperCase
+
+### toString
+
+### toWellFormed
+
+### trim
+
+### trimEnd
+
+### trimStart
+
+### valueOf
+
+
+### [@@iterator]
+
 ## 字符串转换
+
 ## 模板字符串

@@ -1,7 +1,7 @@
 import CodeBlock from './CodeBlock';
 import * as Components from '@nextui-org/react';
 import { Language } from 'prism-react-renderer';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 import ExpandableCallout from './ExpandableCallout';
 import Link from './Link';
 

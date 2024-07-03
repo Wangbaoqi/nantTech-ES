@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import * as React from 'react';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 
 import {
   NoteLinearIcon as IconNote,

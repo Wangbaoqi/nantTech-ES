@@ -10,7 +10,7 @@ import {
   Image
 } from '@nextui-org/react';
 import { compareDesc, format, parseISO } from 'date-fns';
-import { clsx } from '@nextui-org/shared-utils';
+import clsx from 'clsx';
 
 export default function PostCard({ post, id }: { post: Post; id: number }) {
   const postClsx = clsx('w-full flex p-4 bg-transparent');
