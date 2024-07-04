@@ -84,7 +84,7 @@ const typeGrammar = [
     ]
   },
   {
-    name: 'Other Standards',
+    name: 'Additional Standards',
     path: '/docs/typeGrammar/other',
     icon: PresentationIcon,
     collapsed: false,
@@ -96,6 +96,18 @@ const typeGrammar = [
       {
         name: 'Terminology',
         path: '/docs/typeGrammar/other/terms'
+      }
+    ]
+  },
+  {
+    name: 'Additional Features',
+    path: '/docs/typeGrammar/features',
+    icon: PresentationIcon,
+    collapsed: false,
+    items: [
+      {
+        name: 'Web Browser Features',
+        path: '/docs/typeGrammar/features/web'
       }
     ]
   }

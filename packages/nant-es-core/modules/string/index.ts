@@ -27,3 +27,33 @@ NString.prototype.nCharAt = function(this: any, pos: number) {
   return position < 0 || position >= size ? '' : S.substring(position, position + 1);
 }
 
+
+// https://tc39.es/ecma262/#sec-string.prototype.charcodeat
+NString.prototype.nCharCodeAt = function(this: any, pos: number) {
+  const S = toString(requireObjectCoercible(this));
+  let position = toIntegerOrInfinity(pos);
+  let size = S.length;
+  if(position < 0 || position >= size) return NaN;
+  // Return the Number value for the numeric value of the code unit at index position within the String S.
+  return S.charCodeAt(position);
+}
+
+// https://tc39.es/ecma262/#sec-string.prototype.codepointat
+NString.prototype.nCodePointAt = function(this: any, pos: number) {
+  const S = toString(requireObjectCoercible(this));
+  let position = toIntegerOrInfinity(pos);
+  let size = S.length;
+  if(position < 0 || position >= size) return NaN;
+  return S.codePointAt(position);
+}
+
+NString.prototype.nEndsWith = function(this: any, searchString: string, endPosition?: number) {
+  const S = toString(requireObjectCoercible(this));
+  const str = toString(searchString);
+  let pos = endPosition === undefined ? S.length : toIntegerOrInfinity(endPosition);
+  const len = S.length;
+  if(pos < 0) return false;
+  if(pos > len) pos = len;
+  if(pos === len) return true;
+  return S.slice(pos, len) === str;
+}

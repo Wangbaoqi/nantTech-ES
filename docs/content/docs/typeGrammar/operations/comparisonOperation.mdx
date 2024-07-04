@@ -52,10 +52,11 @@ export function IsCallable(argument: ESValueType): boolean {
 
 ## isStrictlyEqual
 
-抽象操作`isStrictlyEqual`接受参数 `x` - [ECMAScript语言值]()和`y` - [ECMAScript语言值]并返回布尔值。
-它为===运算符提供了语义。调用时，它会执行以下步骤：
+抽象操作`isStrictlyEqual`接受参数 `x`（ECMAScript语言值）和`y`（ECMAScript语言值）并返回布尔值或者*throw completion*。
+它为`===`运算符提供了语义。
 
 <Blockquote>
+  它会执行以下步骤：
 1. If Type(x) is not Type(y), return false.
 2. If x is a Number, then
   a. Return Number::equal(x, y).
@@ -78,9 +79,39 @@ export function isStrictlyEqual(x: ESValueType, y: ESValueType): boolean {
 
 ## isLooselyEqual
 
+抽象操作`isLooselyEqual`接受参数 *x*（ECMAScript语言值）和 *y*（ECMAScript语言值）并返回布尔值或者*throw completion*。
+
+<Blockquote>
+  执行以下步骤：
+  - Type(x) is Type(y), then
+    - Return [isStrictlyEqual](#isStrictlyEqual)
+  - If x is *null* and y is *undefined*, return true
+  - If x is *undefined* and x is *null*, return true
+  - <WarningStrong>Note: internal Slot</WarningStrong>
+    - If x is an Object, x has an [[IsHTMLDDA]] internal slot, and y is either undefined or null, return true
+    - If x is either undefined or null, y is an Object, and y has an [[IsHTMLDDA]] internal slot, return true
+  - If x is a Number and y is a String, return `!isLooselyEqual(x, !ToNumber(y))`
+  - If y is a Number and x is a String, return `!isLooselyEqual(y, !ToNumber(x))`
+  - If x is a BigInt and y is a String, then
+    - Let n be *[StringToBigInt](/docs/typeGrammar/operations/typeConversion#stringtobigint)(y)*
+    - if n is undefined, return false
+    - Return `!isLooselyEqual(x, n)`
+  - If x is a String and y is a BigInt, return `!isLooselyEqual(y, x)`
+  - If x is a Boolean, return `!isLooselyEqual(!ToNumber(x), y)`
+  - If y is a Boolean, return `!isLooselyEqual(!ToNumber(y), x)`
+  - If x is either a String, a Number, a BigInt, or a Symbol and y is an Object, return `!isLooselyEqual(x, ?ToPrimary(y))`
+  - If y is either a String, a Number, a BigInt, or a Symbol and x is an Object, return `!isLooselyEqual(?ToPrimary(x), y)`
+  - If x is a BigInt and y is a Number, or if x is a Number and y is a BigInt, then
+    - if x is not finite and y is not finite, return false
+    - if  ℝ(x) = ℝ(y), return true; otherwise return false.
+  - Return false
+</Blockquote>
+
+
+
 ## SameValue
 
-抽象操作`SameValue`接受参数 `x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
+抽象操作`SameValue`接受参数 `x`（ECMAScript语言值）和`x` - [ECMAScript语言值](/utils/types#ecmascript-language-value)并返回布尔值。
 它决定了这两个参数是否是相同的值。调用时，它会执行以下步骤：
 
 <Blockquote>
@@ -180,4 +211,15 @@ export function sameValue(x: ESValueType, y: ESValueType): boolean {
 
 ## isPropertyKey
 
+
 ## isRegExp
+
+抽象操作*isRegExp*接受参数*argument(es type value)*，并且返回一个包含**Boolean**一个*normal completion*或者*throw exception*。
+
+<Blockquote>
+  执行步骤：
+  1. if *argument* is not an Object, return false
+  2. Let matcher be ? Get(argument, %Symbol.match%).
+  3. If matcher is not undefined, return [ToBoolean]()(matcher).
+  4. If argument has a `[[RegExpMatcher]]` internal slot, return true.
+</Blockquote>

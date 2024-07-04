@@ -1,0 +1,48 @@
+---
+title: Additional Features for Web Browser
+excerpt: Additional Features for Web Browser
+date: 2023-01-23
+type: Docs
+category: DataType
+tags: DataType
+---
+
+## The [[IsHTMLDDA]] internal slot
+
+一个*[[IsHTMLDDA]] internal slot*可能在宿主环境对象中存在。
+具有这种属性的对象在[isLooselyEqual](/docs/typeGrammar/operations/comparisonOperation#islooselyequal)、
+[ToBoolean](/docs/typeGrammar/operations/typeConversion#toboolean)抽象操作上的表现为 *undefined*。
+
+除此之外，*typeof*运算符的表现也是一致。
+
+<Note>
+  ECMAScript规范是不会创建这种具有`[[IsHTMLDDA]]` *internal slot*的对象的。
+  然而，web浏览器中的**document.all**对象是一个主机定义的特殊对象，带有这个插槽，它的存在是为了web兼容性。
+  这种类型的对象没有其他已知示例，除了document.all之外。
+</Note>
+
+具有这种插槽的对象主要在三个方面的特性：
+
+1. 表现为[ToBoolean](/docs/typeGrammar/operations/typeConversion#toboolean)的第三步，例如：
+
+```js
+// hosts web browser
+Boolean(document.all); // undefined
+```
+
+2. 表现为宽松比较[IsLooselyEqual](/docs/typeGrammar/operations/comparisonOperation#islooselyequal)的第四步，例如，
+
+```js
+// hosts web browser
+document.all == undefined; // true
+document.all == null; // true
+```
+
+3. 表现为*typeof*操作符
+
+
+
+
+
+
+
