@@ -70,16 +70,12 @@ const typeGrammar = [
     collapsed: false,
     items: [
       {
-        name: 'Type Conversion',
-        path: '/docs/typeGrammar/typeConversion'
+        name: 'Lexical Grammar',
+        path: '/docs/typeGrammar/grammar/lexical'
       },
       {
-        name: 'Number Conversion',
-        path: '/docs/typeGrammar/numberConversion'
-      },
-      {
-        name: 'Comparison Operation',
-        path: '/docs/typeGrammar/comparisonOperation'
+        name: 'Expressions',
+        path: '/docs/typeGrammar/grammar/expressions'
       }
     ]
   },

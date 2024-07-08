@@ -9,7 +9,170 @@ tags: DataType
 ---
 
 
+## Identifiers
+
+标识符是代码中用来标识**变量**，**函数**以及**属性**的**字符序列**。
+
+在JS中，从[语法](https://tc39.es/ecma262/#sec-identifiers)上将标识符分为以下几种：
+
+1. *IdentifiersReference*: 在代码中对标识符的引用，可以跟`yield`和`await`结合使用。
+
+**语法规则**
+1. Identifier: 一般的标识符引用
+2. `[~Yield]` yield: 当不在生成器上下文中时，yield 可以作为标识符引用。
+3. `[~Await]` await: 当不在异步上下文中时，await 可以作为标识符引用。
+
+<CodeStep step={1}>示例</CodeStep>
+
+```ts
+// 一般标识符引用
+let x = 0;
+console.log(x); // x 为一个IdentifierReference
+
+// 非生成器上下文中，yield 可以作为标识符引用
+let yield = 10;
+console.log(yield); // 输出: 10
+
+// 非异步上下文中，await 可以作为标识符引用
+let await = 20;
+console.log(await); // 输出: 20
+
+async function asyncFunc() {
+  // 在异步函数中，await 不能作为标识符引用
+  // let await = 30; // 语法错误
+}
+
+function* generatorFunc() {
+  // 在生成器函数中，yield 不能作为标识符引用
+  // let yield = 40; // 语法错误
+}
+```
+
+2. *BindingIdentifier*：**是在变量声明、函数声明或函数参数中用来命名的标识符。它用于绑定一个名称到特定的值或函数。**
+
+**语法规则**
+1. Identifier: 一般的标识符声明。
+2. yield: 在生成器上下文中，yield 不能作为标识符声明。
+3. await: 在异步上下文中，await 不能作为标识符声明。
+
+<CodeStep step={1}>示例</CodeStep>
+
+```ts
+let y = 20; // 这里的 `y` 就是一个 BindingIdentifier
+
+function add(a, b) { // 这里的 `a` 和 `b` 都是 BindingIdentifier
+  return a + b;
+}
+
+const obj = {
+  method() { // 这里 `method` 是一个方法名，不是 BindingIdentifier
+    let z = 30; // 这里的 `z` 是一个 BindingIdentifier
+  }
+}
+```
+
+3. *LabelIdentifier*: 用于标记代码块中的标签，常用于控制流语句。
+
+**语法规则**
+1. Identifier: 一般的标识符引用
+2. `[~Yield]` yield: 当不在生成器上下文中时，yield 可以作为标识符引用。
+3. `[~Await]` await: 当不在异步上下文中时，await 可以作为标识符引用。
+
+<CodeStep step={1}>示例</CodeStep>
+
+```ts
+// 在非生成器上下文中，yield 可以作为 LabelIdentifier
+yieldLabel: for (let i = 0; i < 5; i++) {
+  console.log(i);
+  break yieldLabel; // 正常工作
+}
+
+// 在非异步上下文中，await 可以作为 LabelIdentifier
+awaitLabel: for (let i = 0; i < 5; i++) {
+  console.log(i);
+  break awaitLabel; // 正常工作
+}
+
+async function asyncFunc() {
+  // 在异步函数中，await 不能作为 LabelIdentifier
+  // awaitLabel: for (let i = 0; i < 5; i++) {
+  //     console.log(i);
+  //     break awaitLabel; // 语法错误
+  // }
+}
+
+function* generatorFunc() {
+  // 在生成器函数中，yield 不能作为 LabelIdentifier
+  // yieldLabel: for (let i = 0; i < 5; i++) {
+  //     console.log(i);
+  //     break yieldLabel; // 语法错误
+  // }
+}
+```
+
+### Static Semantics
+
+<Note>
+  静态语义：早期错误是指在代码实际执行之前，**由编译器或解释器在代码的静态分析阶段检测到的语法或语义错误**。这些错误是通过分析代码结构而不是执行代码来发现的。
+  - **早期错误**是指在代码执行之前就会检测到并报告的错误。例如，语法错误、在严格模式下使用保留字、重复声明变量等。
+  - **静态语义**检查在解析代码（编译阶段的一部分）时进行。这些检查确保代码在语法上和语义上都是正确的，以便能够正确执行。
+</Note>
+
+*标识符*在静态语义分析阶段主要有以下几种场景是会出现异常：
+1. 在*严格模式*下，*BindingIdentifier*中**一般标识符引用**的值如果是`arguments`或者`eval`的话，是一个语法错误
+```js
+'use strict';
+
+let arguments = 'arguments'; // SyntaxError: Binding 'arguments' in strict mode.
+let eval = ''; // SyntaxError: Binding 'eval' in strict mode.
+function foo(arguments) { // SyntaxError: Binding 'arguments' in strict mode.
+  console.log(arguments)
+}
+function foo(eval) { // SyntaxError: Binding 'eval' in strict mode.
+  console.log(eval)
+}
+```
+
+2. 在*严格模式*下，标识符为`yield`为语法错误
+
+```js
+'use strict'
+let yield = ''; // SyntaxError: Unexpected strict mode reserved word
+```
+
+3. 当**目标符号（goal symbol）是模块时**，不能使用`await`作为标识符。
+```js
+'use strict'
+let await = ''; // SyntaxError: Unexpected strict mode reserved word
+```
+
+4. 标识符的不能是**关键字（ReserveWord）**
+
+
+需要注意的是转义序列作为标识的情况。
+
+<Note>
+  在 ECMAScript 规范中，关于 IdentifierName 的规定确保了标识符名称（IdentifierName）中的 Unicode
+  转义序列（Unicode escape sequences）会被规范化，因此无法使用这些转义序列来创建与保留字相同的标识符。
+
+  例如：
+  ```js
+    // 使用转义序列定义标识符
+    let \u0069f = "value"; // 这里的 \u0069 表示字符 'i'，定义了一个变量名为 'if'
+    // 尝试定义与保留字相同的标识符，这会导致语法错误
+    let \u0065lse = "value"; // SyntaxError: Unexpected token 'else'
+  ```
+  当然，这种方式并不推荐。
+</Note>
+
+
+### Runtime Semantics
+
+
+
 ## Unary Operators
+
+
 
 ### typeof
 

@@ -91,8 +91,6 @@ function SidebarDetail(props: {
   const isActive = pathname === item.path;
 
   const collapsed = pathname.indexOf(item.path) !== -1;
-  console.log(isActive, item.path);
-
   const isCollapsed = collapsed || !!item.collapsed;
 
   return (

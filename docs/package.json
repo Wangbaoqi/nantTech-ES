@@ -27,6 +27,7 @@
     "clsx": "^2.0.0",
     "contentlayer": "latest",
     "date-fns": "^2.30.0",
+    "ecmarkup": "^19.0.0",
     "esbuild": "^0.20.0",
     "fast-glob": "^3.3.2",
     "framer-motion": "^10.16.5",

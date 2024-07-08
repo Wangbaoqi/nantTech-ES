@@ -6,6 +6,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { visit } from 'unist-util-visit';
 
+const rehypeEcmarkup = require('./plugins/rehype-ecmark');
+
 export const Post = defineDocumentType(() => ({
   name: 'Post',
   filePathPattern: `content/blog/**/*.mdx`,
