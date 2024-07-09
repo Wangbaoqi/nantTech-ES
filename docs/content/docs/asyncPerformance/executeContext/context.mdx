@@ -1,0 +1,36 @@
+---
+title: Execution Contexts
+excerpt: Execution Contexts
+date: 2023-01-23
+type: Docs
+category: ControlObjects
+tags: Execution Contexts
+---
+
+执行上下文是一种规范设备，用于跟踪ECMAScript实现对代码的运行时评估。在任何时间点，
+每个代理最多有一个实际执行代码的执行上下文。这称为代理的运行执行上下文。
+本说明书中对运行执行上下文的所有引用表示周围代理的运行执行上下文。
+
+
+
+
+## ResolveBinding
+
+*ResolveBinding*是一个用于查找标识符绑定的抽象操作。它通过在当前作用域链中查找特定名称的标识符，
+返回其对应的绑定对象。如果未找到该绑定，会抛出一个`ReferenceError`。
+
+### 解释
+
+接收一个参数*name(a String)*和可选参数*env(an Environment Record or undefined)*并且返回一个包含引用记录(*Reference Record*)的
+普通完成(*normal completion*)或者抛出*throw completion*。
+
+- 参数*name*：需要查找的标识符名称
+- 可选参数*env*：开始查找的环境记录，没有提供则默认从当前执行上下文的词法环境(Lexical Environment)开始。
+
+### 查找过程
+
+1. 从当前环境记录开始：如果提供了*env*参数，则从该环境中查找，否则，从当前词法环境开始
+2. 逐级查找：在当前环境记录中查找，如果找到，则返回绑定对象。
+3. 向上级环境记录中查找：如果当前环境记录中没找到，沿着作用域链向上查找，直到全局作用域。
+4. 抛出错误：所有环境记录中没有找到，则抛出异常。
+

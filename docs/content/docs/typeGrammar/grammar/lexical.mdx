@@ -6,3 +6,87 @@ type: Docs
 category: DataType
 tags: DataType
 ---
+
+
+
+
+## Literals
+
+字面量（Literal）是直接表示值的基本表达式。字面量用于表示固定的值，它们可以是
+*String*、*Numeric*、*Boolean*、*Null*、*Object*、*Array*、*Regluar*和*Template*。
+
+1. **Null字面量**：只有`null`
+2. **Boolean字面量**: 有`false`和`true`
+
+
+### Numeric字面量
+
+Numeric字面量有*DecimalLiteral*、*DecimalBigIntegerLiteral*、*NonDecimalIntegerLiteral*、*LegacyOctalIntegerLiteral*。
+
+1. *DecimalLiteral*：是用于表示十进制数字的字面量。它可以包括整数部分、小数部分和指数部分。
+
+根据其[语法结构](https://tc39.es/ecma262/#prod-DecimalLiteral)，可以有以下几种表示形式：
+
+- 整数+小数+指数
+  - `123.23e2`、`123.23E-2`、`123.23`
+- 小数+指数
+  - `.23e2`、`.23E-2`、`.23`
+- 整数+指数
+  - `123`、`123e2`、`123`
+
+```ts
+let num = 123.23e2; // 12323 = 123.23 * (10 ** 2)
+let num1= 123.23e-1; // 12.323 = 123.23 * (10 ** -1)
+```
+
+2. *DecimalBigIntegerLiteral*:表示大整数字面量。这些大整数字面量超出了普通 *Number* 类型的安全范围，使用后缀 `n` 来表示。
+
+根据其[语法结构](https://tc39.es/ecma262/#prod-DecimalBigIntegerLiteral)，可以有以下几种表示形式：
+
+- `0n`
+- `123n`
+- `1_000_000_33n`
+
+3. *NonDecimalIntegerLiteral*: 非十进制整数字面量，可以是二进制、八进制或十六进制的整数。这些整数字面量不包含小数部分，而且可以使用数字分隔符提高可读性。
+
+根据其[语法结构](https://tc39.es/ecma262/#prod-NonDecimalIntegerLiteral)，可以有以下几种表示形式：
+
+- `BinaryIntegerLiteral`: 二进制字面量
+  - `0b0101`、`0B1010`、`0b0000_1111`
+- `OctalIntegerLiteral`: 八进制字面量
+  - `0o07`、`0o1234`、`0o777_777`
+- `HexIntegerLiteral`: 十六进制字面量
+  - `0x0f`、`0xffff`
+
+4. *LegacyOctalIntegerLiteral*: 传统的八进制整数字面量表示，[语法结构](https://tc39.es/ecma262/#prod-LegacyOctalIntegerLiteral)
+
+这种方式在**严格模式**下会有`SyntaxError`来标记这种使用，在 **ES6**以上版本中以禁止使用这种方式。
+
+<Note>
+  <NoteStrong>Static Semantics: MV(Mathematical Value)</NoteStrong>
+
+  MV(Mathematical Value): 是一个定义，将数值文本转换成数值的数学值，这也是运行时需要执行的操作。
+
+  MV大概的计算过程：
+    - 忽略前导空格：从输入文本中忽略任何前导空格（空格字符、水平制表符、垂直制表符、换行符、回车符和换页符）。
+    - 处理符号：
+      - 如果文本以 `-` 开头，则结果是一个负数。
+      - 如果文本以 `+` 开头或没有符号，结果是一个正数。
+    - 确定基数：
+      - 如果文本以 0x 或 0X 开头，基数为 16。
+      - 如果文本以 0o 或 0O 开头，基数为 8。
+      - 如果文本以 0b 或 0B 开头，基数为 2。
+      - 否则，基数为 10。
+    - 解析数字：
+      - 从文本 中移除可能的前缀，并解析剩余部分为一个整数。
+    - 处理异常情况：
+      - 如果文本包含非法字符或无法转换为有效数字，则返回 NaN（Not-a-Number）。
+      - 如果文本表示的值超出了 JavaScript 数值类型的范围，则返回 Infinity 或 -Infinity。
+    - 返回结果：
+      - 返回计算得到的数学值（Mathematical Value）。
+</Note>
+
+不同表示的数字的[详细计算过程-规范](https://tc39.es/ecma262/#sec-static-semantics-mv)，也可以参考[进制之间的转换](/docs/typeGrammar/other/terms#%E4%BA%8C%E8%BF%9B%E5%88%B6binary)
+
+
+### String字面量

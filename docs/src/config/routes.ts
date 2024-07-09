@@ -111,6 +111,20 @@ const typeGrammar = [
 
 const asyncPerformance = [
   {
+    name: 'Executable Code and Contexts',
+    path: '/docs/asyncPerformance/executeContext',
+    icon: Shell,
+    collapsed: false,
+    items: [
+      {
+        name: 'Execution Contexts',
+        collapsed: false,
+        icon: '',
+        path: '/docs/asyncPerformance/executeContext/context'
+      }
+    ]
+  },
+  {
     name: 'Iteration',
     path: '/docs/asyncPerformance/iteration',
     icon: Shell

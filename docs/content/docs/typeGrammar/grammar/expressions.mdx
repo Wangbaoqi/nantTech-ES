@@ -148,7 +148,6 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 
 4. 标识符的不能是**关键字（ReserveWord）**
 
-
 需要注意的是转义序列作为标识的情况。
 
 <Note>
@@ -168,12 +167,62 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 
 ### Runtime Semantics
 
+<Note>
+  运行时语义：**求值**是指在代码实际执行过程中，解释器如何计算和处理代码中的表达式、语句和程序结构。这是代码的动态行为部分，是解释器在运行时执行代码时所遵循的规则和步骤。
+  - 运行时语义涉及变量赋值、表达式计算、函数调用、控制流等。
+  - 求值是指计算表达式的值并执行语句。例如，求值一个算术表达式、调用一个函数、执行一个循环等。
+</Note>
+
+**标识符**在运行时阶段主要执行[ResolveBinding](/docs/asyncPerformance/executeContext/context#resolvebinding)方法。
+
+此方法是一个**查找标识符绑定的抽象操作**，在当前作用域链中查找特定名称的标识符，返回其对应的绑定对象，
+如果没有找到，会抛出一个`ReferenceError`。
+
+
+
+## Primary Expressions
+
+**Primary Expressions**是JS中表达式的基础，是其他复杂表达式的构建块，主要体现在以下几种：
+- `this` 关键字（ReserveWord）
+- [Identifiers](#Identifiers)
+- [Literal](/docs/typeGrammar/grammar/lexical#literals)
+  - ArrayLiteral
+  - ObjectLiteral
+- FunctionExpression
+- ClassExpression
+- GeneratorExpression
+- AsyncFunctionExpression
+- AsyncGeneratorExpression
+- RegluarExpressionLiteral
+- TemplateLiteral
+
+
+### Literal
+
+**Literal（字面量）**是直接表示值的表达式，主要有以下几种*NullLiteral*，*BooleamLiteral*，*StringLiteral*和*NumericLiteral*。这些错误是通过分析代码结构而不是执行代码来发现的。
+
+除了这种
+
+
+
+
+
+
+## Update Expressions
+
+
 
 
 ## Unary Operators
+
+*Unary Operators*主要有
 
 
 
 ### typeof
 
-运行时语义进行评估
+*typeof*运算符主要确定**变量**或者**一元表达式**的数据类型。返回一个字符串，表示操作数的类型。主要是在**运行阶段进行求值**
+
+**求值过程**：
+
+
