@@ -90,3 +90,69 @@ let num1= 123.23e-1; // 12.323 = 123.23 * (10 ** -1)
 
 
 ### String字面量
+
+**String字面量**是单引号或双引号括起来的0个或多个*Unicode码位*。
+
+<Note>
+  Unicode码点也可以由转义序列表示。
+
+  除了`"`or`'`单双结束引号，`U+005C`反斜杠，`U+000D`回车，`U+000A`换行之外，**所有的码点
+  都可以出现字符串文本中，任何码点都可以以转义序列的形式出现**。
+
+  字符串字面量会被计算成字符串值，而在生成字符串值时，Unicode码点通过[UTF-16进行编码](/docs/typeGrammar/other/unicode#utf-16)。
+
+  **转义序列的语法表示方式：**
+
+  1. *CharacterEscapeSequence*: 字符转义序列
+
+</Note>
+
+字符串字面量语法表示方式（单双引号表示一致）：
+
+1. *sourceCharacters*: 任何*Unicode码位*除了`"`,`'`,`\`, `U+000D`, `U+000A`。
+
+2. *\ EscapeSequence*: 转义序列
+
+转义序列又分为以下几种：
+  - characterEscapeSequence：字符转义序列
+    包含`\n`-换行符, `\t`：制表符, `\b`-退格符, `\r`-回车符, `\\`-反斜杠, `\'`-单引号, `\"`-双引号
+  - LegacyOctalEscapeSequence：
+    传统八进制转义序列使用八进制数值来表示字符。八进制转义序列以反斜杠 `\` 开头，后跟一到三位的八进制数。
+  - NonOctalDecimalEscapeSequence：
+    非八进制十进制转义序列较少见，主要用于表示与八进制数不重叠的十进制值。在现代标准中，这种转义序列通常不推荐使用，更建议使用十六进制或Unicode转义序列。
+  - HexEscapeSequence：
+    十六进制转义序列使用十六进制数值来表示字符，格式为`\x`后跟两位十六进制数。
+  - UnicodeEscapeSequence：
+    Unicode转义序列使用Unicode码点来表示字符，格式为 `\u` 后跟四位十六进制数，或者 `\u{}` 包含一到六位十六进制数（ES6及以上版本）。
+  - `0 [lookahead ∉ DecimalDigit]`: 是一种正则表达式的语法，表示零的转义序列后面不能跟随十进制数字。具体来说，这在解释传统八进制和非八进制转义序列时特别有用。让我们更详细地了解这种用法以及它如何与不同的转义序列类型关联。
+```ts
+'line1\nline2\tTabbed\x41\u0041\u{1F600}';
+// Line1
+// Line2    TabbedAA😃
+```
+
+<Pitfall>
+  **Static Semantics: early errors**:
+
+  在严格模式下，`LegacyOctalEscapeSequence`和`NonOctalDecimalEscapeSequence`是存在语法错误的。
+</Pitfall>
+
+
+<Note>
+  **Static Semantics: SV(Semantics Value)**:
+
+  SV 是语义值（Semantic Value）的简称，用于解释字符串字面量如何解析为最终的字符串值。下面是对每个规则的详细解释和示例：
+
+  1. `""`或者`''`代表空字符串
+  2. 字符串连接运算符`+`代表字符串拼接(`''`或者`""`)
+  3. 引号内的字符(除了`"`,`\`和换行符)会被UTF-16进行编码
+  4. 特殊字符`<LS>`-（分隔符0x2028)，`<PS>`-（分隔符0x2029)，`LineContinuation`- （延续符，解释为空字符串）
+  5. `\0`表示空字符
+  6. 单字符转义序列，如`\n`，`\b`等，[转义表](https://tc39.es/ecma262/#table-string-single-character-escape-sequences)
+  7. 非转义字符，即按UTF-16编码
+  8. 传统八进制转义序列的数值部分被转换为响应的字符串值。
+  9. 非八进制十进制转义序列`8`和`9`分别表示字符8和9。
+  10. 十六进制转义序列， `x`后跟两位或者四位（Unicode字符）十六进制数。
+  11. Unicode转义序列`\u{}` 中包含的码点将被转换为对应的 UTF-16 编码。
+  12. 模板转义序列 `\0`表示空字符
+</Note>
