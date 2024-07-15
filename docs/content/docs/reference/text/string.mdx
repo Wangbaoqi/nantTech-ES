@@ -159,7 +159,7 @@ const smiley = String.fromCharCode(0x101c); //输出: 'လ'
   - `String.fromCharCode`无法直接处理超出 BMP 的字符，需要手动处理代理对。
     ```js
     // 比如 码位 U+1F303 代理对 0xd83c, 0xdf03
-    String.fromCharCode(0xd83c, 0xdf03); // 码位 U+1F303（夜晚与星星）=== "\uD83C\uDF03"
+    String.fromCharCode(0xd83c, 0xdf03); // 码位 U+1F303（夜晚与星星）
     ```
   - `String.fromCodePoint` 可以直接生成超出 BMP 的字符，无需额外处理。
     ```js
