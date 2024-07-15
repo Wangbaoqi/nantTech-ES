@@ -101,10 +101,6 @@ let num1= 123.23e-1; // 12.323 = 123.23 * (10 ** -1)
 
   字符串字面量会被计算成字符串值，而在生成字符串值时，Unicode码点通过[UTF-16进行编码](/docs/typeGrammar/other/unicode#utf-16)。
 
-  **转义序列的语法表示方式：**
-
-  1. *CharacterEscapeSequence*: 字符转义序列
-
 </Note>
 
 字符串字面量语法表示方式（单双引号表示一致）：
@@ -135,6 +131,7 @@ let num1= 123.23e-1; // 12.323 = 123.23 * (10 ** -1)
   **Static Semantics: early errors**:
 
   在严格模式下，`LegacyOctalEscapeSequence`和`NonOctalDecimalEscapeSequence`是存在语法错误的。
+
 </Pitfall>
 
 
@@ -156,3 +153,77 @@ let num1= 123.23e-1; // 12.323 = 123.23 * (10 ** -1)
   11. Unicode转义序列`\u{}` 中包含的码点将被转换为对应的 UTF-16 编码。
   12. 模板转义序列 `\0`表示空字符
 </Note>
+
+
+<Note>
+  **Static Semantics:  MV(Mathematical Value)**:
+  在数学求值方面，有以下几种：
+  - *LegacyOctalEscapeSequence*：这种八进制转义序列的求值已经在严格模式被弃用了。
+  - *HexEscapeSequence*：十六进制转义序列求值规则**第一个十六进制数乘以16再加上第二个十六进制数**。
+    - `\x41`: 求值为 `4*16 + 1 = 65`为字符A。
+  - *Hex4Digits*: 4位十六进制数求值，例如`0xA1B3`求值过程如下：
+    ```math
+      MV(0xA1B3) = 0x1000_{16} x 10 + 0x100 x 1 + 0x100 x  11 + 0x10 x 3 \\
+      MV(0xA1B3) = 4096 x 10 + 256 x 1 + 16 x 11 + 1 x 3 \\
+      MV(0xA1B3) = 40960 + 256 + 176 + 1 x 3 \\
+      MV(0xA1B3) = 41395
+    ```
+    其结果跟Unicode转义序列`\uA1B3`的码点结果一致。
+</Note>
+
+
+### Regular Expression Literals
+
+一个**Regular Expression Literal** 是一个输入元素，每次计算字面量时，它都会被转换成*RegExp对象*。
+程序中的两个正则表达式文字计算为正则表达式对象，即使这两个文字的内容相同，它们也不会相互比较为`===`。
+也可以在运行时通过`new RegExp`或将`RegExp`构造函数作为函数调用来创建`RegExp`对象。
+
+**正则表达式字面量[语法结构](https://tc39.es/ecma262/#sec-literals-regular-expression-literals)如下：**
+
+RegularExpressionLiterals包含:
+  - **/ RegularExpressionBody / RegularExpressionFlags** 正则表达式字面量由 / 开头，接着是正则表达式主体，最后是 / 和可选的正则表达式标志。
+
+RegularExpressionBody包含:
+  - **RegularExpressionFirstChar RegularExpressionChars** 正则表达式主体由一个 RegularExpressionFirstChar 开始，接着是零个或多个 RegularExpressionChars。
+
+RegularExpressionFirstChar包含：
+  - **RegularExpressionNonTerminator**（一个终止符）but not one of `*` or `\` or `/` or `[`
+  - **RegularExpressionBackslashSequence**（一个反斜杠序列）
+  - **RegularExpressionClass**（字符类）
+
+RegularExpressionChars包含：
+  - [empty] (可以是空的)
+  - **RegularExpressionChars RegularExpressionChars**（可以是一个或者多个）
+
+RegularExpressionBackslashSequence 包含：
+  - \ **RegularExpressionNonTerminator** 反斜杠序列由一个反斜杠 `\` 和一个非终止符字符
+
+RegularExpressionNonTerminator:
+  - **sourceCharacters but not LineTerminator** 非终止符字符是任何源字符（SourceCharacter），但不能是行终止符（LineTerminator）。
+
+RegularExpressionClass：
+  - [RegularExpressionClassChars] 字符类由`[` 开始，然后是零个或多个字符类字符（RegularExpressionClassChars），最后由 `]`结束。
+
+RegularExpressionClassChars:
+  - [empty]
+  - **RegularExpressionClassChars RegularExpressionClassChar**
+
+RegularExpressionClassChar:
+  - **RegularExpressionNonTerminator** 一个非终止符字符，但不能是`]`或者`\`。
+  - **RegularExpressionBackslashSequence** 反斜杠序列
+
+RegularExpressionFlags：
+  - [empty]
+  - **RegularExpressionFlags IdentifierPartChar** 正则表达式标志可以是空的，或者由一个或多个标识符部分字符（IdentifierPartChar）组成。
+
+
+<Pitfall>
+  正则表达式文字不能为空；代码单元序列`//`开始单行注释，而不是表示空的正则表达式文字。要指定空正则表达式，请使用：`/（？：）/`。
+</Pitfall>
+
+
+### Template Literals
+
+
+
+

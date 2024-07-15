@@ -199,10 +199,23 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 
 ### Literal
 
-**Literal（字面量）**是直接表示值的表达式，主要有以下几种*NullLiteral*，*BooleamLiteral*，*StringLiteral*和*NumericLiteral*。这些错误是通过分析代码结构而不是执行代码来发现的。
+**Literal**是直接表示值的表达式，主要有以下几种*NullLiteral*，*BooleamLiteral*，*StringLiteral*和*NumericLiteral*。
 
-除了这种
+<Note>
+  这四种字面量在运行时阶段求值过程如下：
+  - *NullLiteral*：求值为 `null`。
+  - *BooleanLiteral*：求值为 `true`或者`false`。
+  - *StringLiteral*：[Runtime 求值过程](/docs/typeGrammar/grammar/lexical#string%E5%AD%97%E9%9D%A2%E9%87%8F)为字符串。
+  - *NumericLiteral*：[Runtime 求值过程](/docs/typeGrammar/grammar/lexical#numeric%E5%AD%97%E9%9D%A2%E9%87%8F)为数字。
+</Note>
 
+
+### RegluarExpressionLiteral
+
+<Note>
+  **Static Semantics: IsValidRegularExpressionLiteral(literal)**:
+
+</Note>
 
 
 
