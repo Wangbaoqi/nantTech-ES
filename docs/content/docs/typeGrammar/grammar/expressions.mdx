@@ -215,6 +215,41 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 <Note>
   **Static Semantics: IsValidRegularExpressionLiteral(literal)**:
 
+  ```ts
+   function IsValidRegularExpressionLiteral(literal) {
+     // 1. Let flags be the FlagText of literal.
+     const flags = literal.flags;
+     // 2. If flags contains any code points other than d, g, i, m, s, u, v, or y, or if flags contains any code point more than once, return false.
+     const validFlags = new Set(['d', 'g', 'i', 'm', 's', 'u', 'v', 'y']);
+     let flagsSet = new Set();
+     for (const flag of flags) {
+       if (!validFlags.has(flag) || flagsSet.has(flag)) return false;
+       flagsSet.add(flag);
+     }
+     // 3. If flags contains u, let u be true; else let u be false.
+     const u = flags.includes('u');
+     // 4. If flags contains v, let v be true; else let v be false.
+     const v = flags.includes('v');
+     // 5. Let patternText be the BodyText of literal.
+     let patternText = literal.source;
+     // 6. If u is false and v is false, process patternText.
+     if (!u && !v) {
+       // 6.1 Let stringValue be CodePointsToString(patternText).
+       const stringValue = String.fromCodePoint(...patternText);
+       // 6.2 Set patternText to the sequence of code points resulting from interpreting each of the 16-bit elements of stringValue as a Unicode BMP code point. UTF-16 decoding is not applied to the elements.
+       patternText = [...stringValue].map(char => char.codePointAt(0));
+     }
+     // 7. Let pattern be the ParseText(stringValue, u, v).
+     let parseResult;
+     try {
+       parseResult = RegExp(patternText, flags);
+       parseResult = true;
+     } catch (e) {
+       parseResult = false;
+     }
+     return parseResult;
+   }
+  ```
 </Note>
 
 
