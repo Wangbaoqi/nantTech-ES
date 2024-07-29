@@ -11,7 +11,8 @@ import {
   ArrowDown01,
   GitCompare,
   Shell,
-  Microscope
+  Microscope,
+  TableProperties
 } from 'lucide-react';
 export type sourceRoutesType = {
   [key: string]: sourceRoutesItemType[];
@@ -80,6 +81,30 @@ const typeGrammar = [
     ]
   },
   {
+    name: 'Additional Features',
+    path: '/docs/typeGrammar/features',
+    icon: TableProperties,
+    collapsed: false,
+    items: [
+      {
+        name: 'Web Browser Features',
+        path: '/docs/typeGrammar/features/web'
+      },
+      {
+        name: 'Notational Conventions',
+        path: '/docs/typeGrammar/features/conventions'
+      },
+      {
+        name: 'Regular Expression',
+        path: '/docs/typeGrammar/features/regularExp'
+      },
+      {
+        name: 'Template String',
+        path: '/docs/typeGrammar/features/templateString'
+      }
+    ]
+  },
+  {
     name: 'Additional Standards',
     path: '/docs/typeGrammar/other',
     icon: PresentationIcon,
@@ -92,18 +117,6 @@ const typeGrammar = [
       {
         name: 'Terminology',
         path: '/docs/typeGrammar/other/terms'
-      }
-    ]
-  },
-  {
-    name: 'Additional Features',
-    path: '/docs/typeGrammar/features',
-    icon: PresentationIcon,
-    collapsed: false,
-    items: [
-      {
-        name: 'Web Browser Features',
-        path: '/docs/typeGrammar/features/web'
       }
     ]
   }
