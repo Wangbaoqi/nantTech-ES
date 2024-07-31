@@ -98,7 +98,7 @@ strObj.valueOf(); // '2 + 2'
 
 ```js
 const charA = String.fromCharCode(65);
-const charB = String.fromCharCode(6554); // ᦚ
+const charB = String.fromCharCode(6554); //
 ```
 
 2. 处理字符编码
@@ -138,8 +138,8 @@ console.log(combined);
 5. 处理国际化字符
 
 ```js
-const smiley = String.fromCharCode(0x263a); //输出: "☺"
-const smiley = String.fromCharCode(0x101c); //输出: 'လ'
+const smiley = String.fromCharCode(0x263a); //输出:
+const smiley = String.fromCharCode(0x101c); //输出:
 ```
 
 ### fromCodePoint
@@ -206,7 +206,6 @@ let rawString = String.raw`^\d{3}\-\d{2}\-\d{4}$`; // ^\d{3}\-\d{2}\-\d{4}$
 
 ```js
 // \n 不会被解释为换行符，而是按字面值输出。
-let rawString = String.raw`C:\Users\Alice\Documents\file.txt`; // C:\Users\Alice\Documents\file.txt
 ```
 
 ## Properties of prototype
@@ -256,8 +255,6 @@ str.charAt(1); // y
 str.charAt(100); // ''
 
 // 2. '☎' 码点 U+260E
-const str1 = '☎';
-str1.charAt(0); // '☎'
 ```
 
 <CodeStep step={2}>示例2: </CodeStep> 在0xFFFF范围之外的字符，UTF-16码元序列有多个，因此这种结果是需要找到每一个码元
@@ -266,14 +263,15 @@ str1.charAt(0); // '☎'
 
 ```ts
 // 1. 𠀗𠀖
-const str = '𠀗𠀖';
-str.charAt(0); // '\uD840'
-str.charAt(1); // '\uDC17'
-str.charAt(2); // '\uD840'
-str.charAt(3); // '\uDC16'
-str.charAt(4); // ''
-str.charAt(5); // ''
-str.charAt(6); // ''
+const str = "𠀗𠀖";
+// str.charAt(0); // '\uD840'
+// str.charAt(1); // '\uDC17'
+// str.charAt(2); // '\uD840'
+// str.charAt(3); // '\uDC16'
+// str.charAt(4); // ''
+// str.charAt(5); // ''
+// str.charAt(6); // ''
+
 ```
 
 接下来验证一下，字符`𠀗`的码点 U+20017，根据[UTF-16 编码](<(/docs/typeGrammar/other/unicode#utf-16)>)之后的码元序列为`0xD840 0xDC17`。
@@ -352,8 +350,6 @@ str.charAt(6); // ''
 <CodeStep step={3}>示例3: </CodeStep> 如果给出字符的转义序列，返回其Unicode码点值
 
 ```ts
-// 🐎👱❤
-const str = '\ud83d\udc0e\ud83d\udc71\u2764';
 
 // 1. 如果使用for循环，则同一个Unicode码点会被访问两次（因为一个码点可能是代理对），得到的结果是不对的
 // 2. 代替的方案，使用for-of循环或者...str，两者都调用了`@@iterator`方法, 使用codePointAt（0）获取每个元素的代码点。
@@ -465,7 +461,7 @@ str.indexOf('nat'); // -1
 如果传递的字符串格式不正确， `encodeURI` 会抛出错误。可以通过使用 `isWellFormed()` 在将字符串传递给 `encodeURI()` 之前测试字符串来避免这种情况。
 
 ```ts
-const url = "https://example.com/search?q=\uD800";
+const url = "https://example.com/search?q=";
 if(url.isWellFormed()) {
   encodeURI(url);
 }
@@ -478,7 +474,6 @@ if(url.isWellFormed()) {
 
 
 ### match
-
 
 
 ### matchAll

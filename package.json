@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
 		"dev:docs": "npm run dev --prefix ./docs",
-		"build:docs": "npm --dir ./docs build"
+		"build:docs": "npm run build --prefix ./docs"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
