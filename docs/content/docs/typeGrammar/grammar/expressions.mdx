@@ -186,8 +186,8 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 - `this` 关键字（ReserveWord）
 - [Identifiers](#Identifiers)
 - [Literal](/docs/typeGrammar/grammar/lexical#literals)
-- ArrayLiteral
-- ObjectLiteral
+- [Array Initializer](#Array-initializer)
+- [Object Initializer](#Object-initializer)
 - FunctionExpression
 - ClassExpression
 - GeneratorExpression
@@ -210,12 +210,170 @@ let await = ''; // SyntaxError: Unexpected strict mode reserved word
 </Note>
 
 
-### RegluarExpressionLiteral
+### RegluarExpression Literals
+
+[RegularExpression 语法](/docs/typeGrammar/grammar/lexical#regular-expression-literals)
+
+
+### Template Literals
+
+[Template String详细信息](/docs/typeGrammar/features/templateString)
+
+
+### Array Initializer
+
+数组字面量允许可以以一种简洁的方式来创建和初始化数组。
+
+**[语法规则](https://tc39.es/ecma262/#sec-array-initializer), 示例如下**
+1. 空数组
+```js
+const arr = [];
+```
+2. 元素列表
+```js
+const arr = [1,2,3];
+```
+3. 包含元素列表并以省略号结尾的数组
+```js
+const arr = [1,2,3,];
+```
+4. 包含元素列表带有空位（省略号）的数组
+```js
+const arr = [1,,3,];
+```
+5. 包含元素列表带有表达式的数组
+```js
+const arr = [1+2,2,3-1,];
+```
+6. 包含元素列表带有`...`的数组
+```js
+const aar = [1,2,3]
+const arr = [1+2,2,3-1,...aar];
+```
+
+在**运行时语义: 求值阶段**主要会执行两个方法[ArrayCreate](https://tc39.es/ecma262/#sec-arraycreate)和`ArrayAccumulation`，分别用于创建数组和累加数组元素。
+
+### Object Initializer
+
+对象初始化器是描述对象初始化的表达式，以类似文字的形式编写。它是零对或多对属性键和关联值的列表，
+用`{}`括起来。值不需要是文字；每次计算对象初始值设定项时都会计算它们。
+
+对象字面量主要有三种形式：
+
+1. 空对象`{}`
+2. 包含属性定义列表的对象 `{PropertyDefinitionList}`
+3. 包含属性定义列表的对象并以逗号结尾的对象 `{PropertyDefinitionList,}`
+
+<CodeStep step={1}>PropertyDefinitionList</CodeStep> 属性定义列表可以包含一个或者多个属性定义，可以是以下几种形式：
+1. 标识符引用*IdentifierReference*
+```js
+const name = 'nate'
+const obj = {name}
+```
+2. 初始化名称封面*CoverInitializedName*
+<WarningStrong>注意，此语法仅在对象解构中使用，其他方式会抛出语法错误</WarningStrong>
+```js
+const obj = { name = 'nate' }
+```
+3. 属性名和赋值表达式对*PropertyName : AssignmentExpression*
+
+```js
+const obj = { name: 'nate', age: 18 }
+```
+4. 方法定义*MethodDefinition*
+```js
+const obj = {
+  getName: () => {
+    return 'hello'
+  }
+}
+```
+<Note>
+  在*Static semantics: early Error*中，方法定义如果有以下两种方式，会抛出语法错误
+
+  1. 方法中使用了直接使用`super`
+  ```js
+  const obj = {
+    method() {
+      super.method()
+    }
+  }
+  ```
+  2. 方法中使用了`#`私有字段的错误
+  ```js
+  const obj = {
+    #privateKey: 43,
+    getKey() {
+      return this.#privateKey
+    }
+  }
+  ```
+</Note>
+
+5. 扩展属性*Spread property*
+
+```js
+const obj1 = { a: 1, b: 2 };
+const obj2 = { ...obj1, c: 3 }; // { a: 1, b: 2, c: 3 }
+```
 
 <Note>
-  **Static Semantics: IsValidRegularExpressionLiteral(literal)**:
+  **Static Semantics: Early Errors**:
 
+  当对象字面量包含属性定义列表*PropertyDefinitionList*时，如果列表中有多个 `__proto__` 属性，
+  并且这些属性是通过 *PropertyDefinition*, *PropertyName*, *AssignmentExpression* 形式定义的，
+  那么会引发语法错误。不过，如果这个对象字面量是作为 `JSON.parse` 方法的一部分被解析的，则不会应用这条规则。
+
+  1. 引发错误的情况
+  ```js
+    const obj = {
+      __proto__: {},
+      __proto__: {}
+    }; // 语法错误：重复的 __proto__ 属性
+  ```
+  2. 合法的情况
+  ```js
+    const obj1 = {
+      __proto__: {},
+      otherProperty: 42
+    }; // 合法
+
+    const obj2 = {
+      method() {
+        // 方法定义，不是 AssignmentExpression 形式
+      },
+      __proto__: {}
+    }; // 合法
+
+    const obj3 = {
+      ...otherObject,
+      __proto__: {}
+    }; // 合法：扩展属性和 __proto__
+  ```
+  3. *JSON.parse*的特例
+  ```js
+    const jsonString = '{"__proto__": {}, "__proto__": {}}';
+    const obj = JSON.parse(jsonString); // 合法：JSON.parse 不应用重复 __proto__ 的检查
+  ```
 </Note>
+
+
+<CodeStep step={1}>PropertyName</CodeStep>，属性名主要有以下两种形式：
+1. 字面属性名 *LiteralPropertyName*，可以是标识符名称，字符串字面量，数字字面量
+```js
+const obj = {
+  name: 'nate',
+  'age': 18,
+  123: 'none'
+}
+```
+2. 计算属性名 *ComputedPropertyName*，使用`[]`包围的表达式作为属性名
+```js
+const key = 'dynamicKey'
+const obj = {
+  [key]: 'dynamicValue'
+}
+```
 
 
 
