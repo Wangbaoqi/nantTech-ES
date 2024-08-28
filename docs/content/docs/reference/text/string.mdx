@@ -231,7 +231,7 @@ str.at(6); // undefined
 `charAt(pos)`**方法一个由给定的索引处的单个[UTF-16 码元](/docs/typeGrammar/other/unicode#%E7%A0%81%E5%85%83code-unit)构成的新字符串**。
 
 <Note>
-  `charAt`方法总是将字符串作为UTF-16码元序列进行索引。
+`charAt`方法总是将字符串作为UTF-16码元序列进行索引。
 
 因为 Unicode 码位的范围从 `0` 到 `1114111` (0x10FFFF)。`charAt()` 方法总是返回一个其值小于 65536（0xFFFF）的字符。
 
@@ -261,18 +261,6 @@ str.charAt(100); // ''
 
 这种字符一般都是在**第一到第十六辅助平面之内**，详细到[这里](https://zh.wikipedia.org/zh-cn/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E7%AC%AC%E4%B8%80%E8%BC%94%E5%8A%A9%E5%B9%B3%E9%9D%A2)
 
-```ts
-// 1. 𠀗𠀖
-const str = "𠀗𠀖";
-// str.charAt(0); // '\uD840'
-// str.charAt(1); // '\uDC17'
-// str.charAt(2); // '\uD840'
-// str.charAt(3); // '\uDC16'
-// str.charAt(4); // ''
-// str.charAt(5); // ''
-// str.charAt(6); // ''
-
-```
 
 接下来验证一下，字符`𠀗`的码点 U+20017，根据[UTF-16 编码](<(/docs/typeGrammar/other/unicode#utf-16)>)之后的码元序列为`0xD840 0xDC17`。
 因此当执行`charAt(0)`会得到`0xD840`码元，以此类推，后面会得到剩余的码元，直到为空。
