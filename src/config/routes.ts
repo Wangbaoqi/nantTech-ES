@@ -45,6 +45,10 @@ const typeGrammar = [
       {
         name: 'Number Type',
         path: '/docs/typeGrammar/dataType/number'
+      },
+      {
+        name: 'Object Type',
+        path: '/docs/typeGrammar/dataType/object'
       }
     ]
   },

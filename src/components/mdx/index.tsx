@@ -103,15 +103,14 @@ const Thead: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <thead
       className={clsx(
-        '[&>tr]:h-12',
-        '[&>tr>th]:py-0',
+        '[&>tr]:h-12 [&>tr]:border-t',
+        '[&>tr>th]:py-0 ',
+        '[&>tr>th]:border-1 [&>tr>th]:border-neutral-300 dark:[&>tr>th]:border-neutral-700',
         '[&>tr>th]:align-middle',
-        '[&>tr>th]:bg-default-400/20',
+        '[&>tr>th]:bg-default-200/20',
         'dark:[&>tr>th]:bg-default-600/10',
-        '[&>tr>th]:text-default-600 [&>tr>th]:text-xs',
+        '[&>tr>th]:text-default-600 [&>tr>th]:text-md',
         '[&>tr>th]:text-left [&>tr>th]:pl-2',
-        '[&>tr>th:first-child]:rounded-l-lg',
-        '[&>tr>th:last-child]:rounded-r-lg'
       )}
     >
       {children}
@@ -119,13 +118,29 @@ const Thead: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   );
 };
 
+
+const Tbody: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  return (
+    <tbody
+      className={clsx(
+        '[&>tr]:border-t [&>tr]:border-b-1 [&>tr]:border-t-neutral-200 [&>tr]:dark:border-t-neutral-200)',
+        '[&>tr>td]:p-2',
+        '[&>tr>td]:align-middle',
+      )}
+    >
+      {children}
+    </tbody>
+  );
+};
+
+
 const Trow: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return <tr>{children}</tr>;
 };
 
 const Tcol: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
-    <td className='text-sm p-2 max-w-[200px] overflow-auto whitespace-normal break-normal'>
+    <td className='text-sm border border-neutral-300 dark:border-neutral-700 p-2 max-w-[200px] overflow-auto whitespace-normal break-normal'>
       {children}
     </td>
   );
@@ -264,6 +279,7 @@ export const MDXComponents = {
   code: Code,
   table: Table,
   thead: Thead,
+  tbody: Tbody,
   tr: Trow,
   td: Tcol,
   ul: List,
