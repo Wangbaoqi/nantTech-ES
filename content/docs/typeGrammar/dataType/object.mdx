@@ -63,3 +63,69 @@ tags: typeConversion
 
 所有对象都有一个名为`[[PrivateElements]]`的内部槽，它是*PrivateElements*的列表。
 此列表表示对象的私有字段、方法和访问器的值，默认是一个空列表。
+
+**ordinary object**是一个对象，包含了以下标准：
+
+- 具有*表1*列出的内部方法
+- 具有`[[Call]]`内部方法
+- 具有`[[Construct]]`内部方法
+
+**exotic object**也是一个对象，但不是一个普通对象。
+
+表1总结了规范使用的基本内部方法，这些方法适用于ECMAScript代码创建或操作的所有对象。
+每个对象都必须有所有基本内部方法的算法。然而，所有对象不一定对这些方法使用相同的算法。
+
+表1
+| Internal Method | Signature | Description
+| :-------------------- | :-------------- | :-----------------------------------------------------------------------|
+| `[[GetPrototypeOf]]` | `() => Object \| null` | 确定为该对象提供继承属性的对象。空值表示没有继承的属性。
+| `[[SetPrototypeOf]]` | `(Object \| null ) => Boolean` | 将此对象与提供继承属性的另一个对象相关联。传递null表示没有继承的属性。返回true表示操作成功完成，或返回false表示操作不成功。
+| `[[IsExtensible]]`   | `() => Boolean` | 确定是否允许向此对象添加其他属性。
+| `[[preventExtensible]]` | `() => Boolean` | 控制是否可以向此对象添加新属性。如果操作成功，则返回true；如果操作不成功，则返回false。
+| `[[GetOwnProperty]]` | `(propertyKey) => Undefined \| Property Descriptor` | 返回键为propertyKey的此对象的自有属性的属性描述符，如果不存在此类属性，则返回undefined。
+| `[[DefineOwnProperty]]` | `(propertyKey, PropertyDescriptor) => Boolean ` | 创建或更改其键为propertyKey的自有属性，使其状态由PropertyDescriptor描述。如果成功创建/更新该属性，则返回true；如果无法创建或更新该属性，则返回false。
+| `[[HasProperty]]` | `(propertyKey) => Boolean` | 返回一个布尔值，指示此对象是否已经拥有密钥为propertyKey的自有或继承属性。
+| `[[Get]]` | `(propertyKey, Receiver) => any` | 从该对象返回键为propertyKey的属性的值。如果必须执行任何ECMAScript代码来检索属性值，则在评估代码时将Receiver用作this值。
+| `[[Set]]` | `(propertyKey, value, Receiver) => Boolean` | 将键为propertyKey的属性的值设置为value。如果必须执行任何ECMAScript代码来设置属性值，则在评估代码时将Receiver用作this值。如果属性值已设置，则返回true；如果无法设置，则返回false。
+| `[[Delete]]` | `(propertyKey) => Boolean` | 从此对象中删除键为propertyKey的own属性。如果属性未被删除并且仍然存在，则返回false。如果属性已被删除或不存在，则返回true。
+| `[[OwnPropertyKeys]]` | `() => List of property keys` | 返回一个列表，其元素都是对象自己的属性键。
+
+
+表2额外的总结了函数对象的内部方法
+
+表2
+| Internal Method | Signature | Description
+| :-------------------- | :-------------- | :-----------------------------------------------------------------------|
+| `[[Call]]` | `(any, a List of any) => any` | 执行与此对象关联的代码。通过函数调用表达式调用。内部方法的参数是this值和一个列表，其元素是调用表达式传递给函数的参数。实现此内部方法的对象是可调用的。
+| `[[Construct]]` | `(a List of any, Object) => Object` | 创建一个对象。通过new运算符或super调用触发。内部方法的第一参数是一个列表，其元素是构造函数调用或super调用的参数。第二个参数是new运算符最初应用的对象。实现此内部方法的对象称为构造函数。函数对象不一定是构造函数，此类非构造函数对象不一定有`[[Construct]]`内部方法。
+
+
+## Invariants of Essential Internal Methods
+
+<Note>
+ECMAScript引擎对象的内部方法必须符合不变量列表(也就是定义的行为和实际的行为要保持一致)。
+普通ECMAScript对象以及规范中的所有标准外来对象都保持这些不变量。
+
+ECMAScript代理对象通过运行时检查在`[[ProxyHandler]]`对象上调用的陷阱的结果来维护这些不变量。
+任何提供外来对象的实现也必须为这些对象维护这些不变量。
+违反这些不变量可能会导致ECMAScript代码具有不可预测的行为并产生安全问题。然而，违反这些不变量绝不能损害实现的内存安全。
+</Note>
+
+**不变性**是指在所有情况下都必须满足的规则或约束条件。它们保证了对象行为的逻辑一致性，不会因某些内部方法的自定义实现而破坏语言的核心特性。
+
+以内部方法`[[GetOwnProperty]]`实现中的不变性为例：
+
+```js
+let obj = { name: "Alice" };
+
+// 规范行为：如果 `name` 属性存在，其描述符必须与实际行为一致
+console.log(Object.getOwnPropertyDescriptor(obj, "name"));
+// { value: "Alice", writable: true, enumerable: true, configurable: true }
+```
+
+如果`[[GetOwnProperty]]`返回属性描述符`value: 10`，跟实际行为不一致，违反了不变性原则。
+
+表1中其他内部方法也是一致的。
+
+
+## Ordinary and Exotic Objects Behaviours
