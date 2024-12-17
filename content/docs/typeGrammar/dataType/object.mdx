@@ -127,5 +127,41 @@ console.log(Object.getOwnPropertyDescriptor(obj, "name"));
 
 表1中其他内部方法也是一致的。
 
-
 ## Ordinary and Exotic Objects Behaviours
+
+### Ordinary Internal Methods and Internal Slots
+
+**普通对象的内部槽如下表**
+
+| Internal Slots | Description |
+| :------------ | :-------------- |
+| `[[Prototype]]` | 值要么是null，要么是一个对象，用于实现继承|
+| `[[Extensible]]` | 用于实现对象中可扩展内部方法的不变性。一旦被设置为false, 则之后就不能再更改了|
+
+**普通对象的内部方法如下表:**
+
+| Internal Methods | Description |
+| :------------ | :-------------- |
+| `[[GetPrototypeOf]]` | 确定为该对象提供继承属性的对象。空值表示没有继承的属性。 内部指向对象O槽`O.[[Prototype]]`|
+| `[[SetPrototypeOf]]` | 将此对象与提供继承属性的另一个对象相关联。传递null表示没有继承的属性。返回true表示操作成功完成，或返回false表示操作不成功。|
+| `[[IsExtensible]]` | 确定是否允许向此对象添加其他属性。|
+| `[[preventExtensible]]` | 控制是否可以向此对象添加新属性。如果操作成功，则返回true；如果操作不成功，则返回false。|
+| `[[GetOwnProperty]]` | 返回键为propertyKey的此对象的自有属性的属性描述符，如果不存在此类属性，则返回undefined。|
+| `[[DefineOwnProperty]]` | 创建或更改其键为propertyKey的自有属性，使其状态由PropertyDescriptor描述。如果成功创建/更新该属性，则返回true；如果无法创建或更新该属性，则返回false。
+| `[[HasProperty]]` | 返回一个布尔值，指示此对象是否已经拥有密钥为propertyKey的自有或继承属性。
+| `[[Get]]` | 从该对象返回键为propertyKey的属性的值。如果必须执行任何ECMAScript代码来检索属性值，则在评估代码时将Receiver用作this值。
+| `[[Set]]` | 将键为propertyKey的属性的值设置为value。如果必须执行任何ECMAScript代码来设置属性值，则在评估代码时将Receiver用作this值。如果属性值已设置，则返回true；如果无法设置，则返回false。
+| `[[Delete]]` | 从此对象中删除键为propertyKey的own属性。如果属性未被删除并且仍然存在，则返回false。如果属性已被删除或不存在，则返回true。
+| `[[OwnPropertyKeys]]` | 返回一个列表，其元素都是对象自己的属性键。
+| `OrdinaryObjectCreate` | 静态方法以一个现有对象作为原型，创建一个新对象。
+| `OrdinaryCreateFromConstructor` | 静态方法以一个现有构造函数的原型作为原型，创建一个新对象。
+| `GetPrototypeFromConstructor` | 查看构造函数是否有原型对象，有则返回，无则返回入参默认原型
+| `RequireInternalSlot` | 判断入参对象`O`是否是对象或者有内部槽，无则抛出异常
+
+###  Function Objects
+
+
+
+
+
+
