@@ -122,7 +122,7 @@ export const siteConfigNav: TypeSiteConfigNavItem[] = [
   {
     title: 'Scope Closure',
     activeLink: 'scopeClosure',
-    link: '/docs/scopeClosure/iteration',
+    link: '/docs/scopeClosure/executeContext/environmentRecord',
     label: 'ScopeClosure'
   },
   {

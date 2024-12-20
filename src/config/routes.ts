@@ -127,20 +127,7 @@ const typeGrammar = [
 ];
 
 const asyncPerformance = [
-  {
-    name: 'Executable Code and Contexts',
-    path: '/docs/asyncPerformance/executeContext',
-    icon: Shell,
-    collapsed: false,
-    items: [
-      {
-        name: 'Execution Contexts',
-        collapsed: false,
-        icon: '',
-        path: '/docs/asyncPerformance/executeContext/context'
-      }
-    ]
-  },
+
   {
     name: 'Iteration',
     path: '/docs/asyncPerformance/iteration',
@@ -205,7 +192,28 @@ const objectPrototype = [
   }
 ];
 
-const scopeClosure = [];
+const scopeClosure = [
+  {
+    name: 'Executable Code and Contexts',
+    path: '/docs/scopeClosure/executeContext',
+    icon: Shell,
+    collapsed: false,
+    items: [
+      {
+        name: 'Environment Records',
+        collapsed: false,
+        icon: '',
+        path: '/docs/scopeClosure/executeContext/environmentRecord'
+      },
+      {
+        name: 'Execution Contexts',
+        collapsed: false,
+        icon: '',
+        path: '/docs/scopeClosure/executeContext/context'
+      }
+    ]
+  },
+];
 
 const reference = [
   {
@@ -429,5 +437,6 @@ const reference = [
 export const sourceRoutes: sourceRoutesType = {
   typeGrammar,
   asyncPerformance,
+  scopeClosure,
   reference
 };

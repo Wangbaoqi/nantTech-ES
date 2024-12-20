@@ -160,6 +160,13 @@ console.log(Object.getOwnPropertyDescriptor(obj, "name"));
 
 ###  Function Objects
 
+ECMAScript 函数对象封装了在词法环境中闭包的参数化代码，并且进行动态的评估。
+函数对象也是一个普通的对象，具有普通对象的插槽和内部方法，除了`[[Extensible]]`和`[[Prototype]]`
+之外，还具有以下的内部插槽。
+
+| Internal Slot | Type | Description |
+| :------------ | :-------------- | :-------------- |
+| `[[Environment]]` | Environment Record |
 
 
 
