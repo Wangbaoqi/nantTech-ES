@@ -96,4 +96,74 @@ with(obj) {
 - 当代码动态执行时，可以动态的修改全局对象的属性
 
 
+### 模块环境记录
+
+模块环境记录是一个声明性的环境记录，用于表示ECMAScript模块的外部范围。
+
+它的主要特点包括：
+
+- **作用域**：模块环境记录为模块内的所有顶级声明提供了一个独立的作用域，确保模块内的变量和函数不会与其他模块或全局作用域中的标识符冲突。
+- **导入和导出**：模块环境记录支持模块的导入和导出机制，允许模块之间共享功能和数据。通过`import`和`export`语句，模块可以显式地声明其依赖关系和提供的接口。
+- **封装性**：模块环境记录提供了更好的封装性，模块内部的实现细节可以被隐藏，外部只能通过导出的接口进行访问。这有助于减少全局命名冲突和提高代码的可维护性。
+- **静态分析**：由于模块的结构是静态的，JavaScript引擎可以在编译时进行优化，提升模块的加载和执行效率。
+- **生命周期**：模块环境记录的生命周期和模块的加载和执行周期相对应，模块加载时，环境记录被创建，模块执行完毕时，环境记录被销毁。
+
+模块环境记录的设计使得ECMAScript模块能够以一种清晰和可管理的方式组织代码，促进了模块化编程的实践。
+
+## PrivateEnvironment records
+
+*PrivateEnvironment records*是一种特殊的环境记录，主要被用来实现**私有变量**和**封装**，基于*ClassDeclaration*和*ClassExpressions*，
+都关联着*PrivateEnvironment records*，当类被执行时，私有环境记录就会被创建且记录着这个类中声明的私有变量。
+
+```js
+class Counter {
+  #count; // 私有字段
+
+  constructor() {
+      this.#count = 0; // 初始化私有字段
+  }
+
+  increment() {
+      this.#count++; // 访问私有字段
+  }
+
+  getCount() {
+      return this.#count; // 访问私有字段
+  }
+}
+```
+
+[私有环境记录内部算法定义](https://tc39.es/ecma262/#table-privateenvironment-records)
+
+
+## Realms
+
+<Note>
+  ECMAScript262:
+  在所有ECMAScript代码执行之前，所有的代码都必须与一个*Realm*相关联。概念上讲，*Reamls*由一组**固有对象**，**一个全局环境**，**在
+  该全局环境内加载的所有代码以及其他相关的状态和资源组成**。
+</Note>
+
+
+通俗来讲，*Realms*是一个独立的执行环境，包含了自己的全局对象（`window`或者`global`）、原生对象（`Array、Function`等）和其他的相关的
+状态。
+
+*Realm*的作用主要提供一个隔离的执行环境，使得不同的代码可以在互不干扰的情况下运行。对于安全性、模块化和多线程编程场景非常重要。
+
+既然*Realm*是执行的环境，那么就有以下几种类型：
+
+- 浏览器环境：
+  - 全局对象`window`
+  - 全局变量和函数
+  - 内置原生对象
+  - 环境记录
+  - DOM和BOM
+- NodeJS环境
+- Module Realm
+- Web Worker Realm
+- Iframe
+- Service Worker Realm
+- Shared Worker Realm
+
+[关于Realms的内部算法定义](https://tc39.es/ecma262/#table-realm-record-fields)
 
